@@ -1,3 +1,10 @@
+/*
+ Autor- Allan 
+ Objetivo:
+• Leia 10 números inteiros, selecione o menor e o maior e imprima os seus 
+respectivos valores na tela.
+
+ */
 import java.util.Scanner;
 
 public class Ex2 {
