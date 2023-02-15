@@ -6,8 +6,6 @@ visitante e imprima quem foi o vencedor ou se foi empate.
 
  */
 
-
-
 import java.util.Scanner;
 public class Ex5 {
     
