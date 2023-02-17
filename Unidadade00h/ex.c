@@ -11,7 +11,7 @@ int recursivo (char vetor[], int resp, int indice)
     {
        recursivo(vetor, indice-1,resp);
         }
-    printf("a desgraça do resp é %d", resp);
+    printf("o resp é %d", resp);
     return resp;
 }
 
