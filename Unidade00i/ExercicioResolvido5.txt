@@ -1,0 +1,24 @@
+Faça o quadro de memória do programa abaixo
+---------------------------- Algoritmos e Estruturas de Dados II (49)
+class Ponteiro05PassagemObjeto {
+ public static Cliente setar2(Cliente y){
+ y.setCodigo(6); y.setNome(“ff”);
+return y;
+ }
+ public static void setar1(Cliente x){
+ x.setCodigo(4); x.setNome(“dd”); x = new Cliente (5, “ee”);
+ }
+ public static void main (String[] args){
+ Cliente c1 = new Cliente(1, “aa”), c2 = null; c3 = new Cliente(2, “bb”);//cria as variáveis e atribui um endereço para cada uma. 
+ c2 = c1;
+ setar1(c1);
+ c3 = setar2(c2);
+} }
+
+endereço, valor,variavel
+ab1	,ab4	,c1			
+ab2	,	,c2
+ab3	,ab5	,c3
+ab4	,4/dd	,
+ab5	,2/bb	,
+ab6	,c1	,y

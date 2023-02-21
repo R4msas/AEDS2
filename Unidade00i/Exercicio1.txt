@@ -1,0 +1,17 @@
+Faça o quadro de memória do programa abaixo
+----------------------------
+Exercício (1)
+ Algoritmos e Estruturas de Dados II (10)
+class Ponteiro02 PassagemTipoPrimitivo {
+public static void passagemDeTipoPrimitivo(int a){//cria a variável a com outro endereço de memória
+ escrever(“a: ” + a);
+a = 10;//atribui 10 no endereço de a
+escrever(“a: ” + a);
+}
+public static void main(String[] args) {
+int x = 5;//cria um endereço de memória para armazenar a variável x que é um inteiro e atribui o valor cinco neste endereço.
+escrever(“x: ” + x);
+passagemDeTipoPrimitivo(x);//passa como parâmetro o valor de x
+escrever(“x: ” + x);//por não ser uma call by reference, não é atribuído o valor de 10 ao endereço de x.
+}
+}

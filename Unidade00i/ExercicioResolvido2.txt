@@ -1,0 +1,11 @@
+Explique o que o programa abaixo imprime na tela
+---------------------------- Algoritmos e Estruturas de Dados II (8)
+class Ponteiro01Array {
+public static void main (String[] args) {
+int[] vet = new int [5];
+ escrever(vet); //Endereço na memória do endereço de vet[0]
+ vet = new int [5];
+ escrever(vet); //Endereço na memória do endereço de vet[0]
+ }
+}
+

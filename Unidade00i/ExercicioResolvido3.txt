@@ -1,0 +1,24 @@
+Faça o quadro de memória e mostre a saída na tela
+----------------------------
+Exercício Resolvido (3)
+ Algoritmos e Estruturas de Dados II (12)
+class Ponteiro03PassagemArray {
+public static void passagemDeArray(int[ ] b){//cria um ponteiro contendo o endereço do endereço de y[0]
+for (int i = 0; i < 5; i++){
+b[i] *= 5; escrever(“b[” + i + “]: ” + b[i]);//grava nas posições o valor armazenado na memória * cinco.
+}
+b = new int [5];//faz um realloc de memória, mas não há alteração pois o realloc é do mesmo valor do anterior.
+for (int i = 0; i < 5; i++){
+b[i] = i; escrever(“b[” + i + “]: ” + b[i]);
+} }
+public static void main(String[] args) {
+int [] y = new int [5];//cria um ponteiro com o endereço de y[0] com o tamanho de int e aloca 5 espaços de tamanho int de forma sequencial em memória
+for (int i = 0; i < 5; i++){
+y[i] = i; escrever(“y[” + i + “]: ” + y[i]);//grava o valor de 0 usando aritmética de ponteiros, valor 0 no endereço de y[0], valor de 1 no endereço de y[0]+1.
+}
+passagemDeArray(y);//chama o método passando como referência o endereço de y[0]
+for (int i = 0; i < 5; i++){
+ escrever(“y[” + i + “]: ” + y[i]);
+} } }
+
+

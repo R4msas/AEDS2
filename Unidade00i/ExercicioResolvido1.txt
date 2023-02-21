@@ -1,0 +1,4 @@
+O que significa cada um dos trechos de código abaixo?
+int [ ] vet, declaração de um vetor de inteiros, na verdade um ponteiro contendo o primeiro endereço de memória deste vetor.
+= new int [5], atribui o tamanho do vetor de inteiros, neste caso cinco, fazendo a alocação de memória para tanto.
+int [ ] vet = new int [5];, faz em uma linha o que foi explicado anteriormente.

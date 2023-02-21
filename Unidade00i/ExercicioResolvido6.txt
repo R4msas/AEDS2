@@ -1,0 +1,7 @@
+• Na verdade, no comando c2 = c1 do exercício anterior, o 
+programador gostaria que os atributos do objeto apontado por 
+c2 fossem iguais aos do objeto apontado por c1, contudo, 
+apontando para objetos distintos. Como podemos ajudá-lo?
+
+R:No método main da classe Ponteiro05PassagemObjeto, trocamos o 
+comando c2 = c1 por c2 = c1.clone()
