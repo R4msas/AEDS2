@@ -1,0 +1,23 @@
+• Seja a classe Lixão abaixo e a Funcionário do exemplo 
+anterior, faça o quadro de memória para o código abaixo
+---------------------------- Algoritmos e Estruturas de Dados II (6)
+Exercício
+Introdução a Orientação por Objetos
+class Lixao{
+public static void main(String[] args){
+Funcionario f1;
+f1 = new Funcionario();
+f1 = new Funcionario(5);
+}
+}
+endereço,valor  ,nomeVariável
+        ,       ,           ,
+        ,       ,           ,
+        ,       ,           ,
+        ,       ,           ,
+        ,       ,           ,
+        ,       ,           ,
+        ,       ,           ,
+        ,       ,           , 
+        ,       ,           ,
+        ,       ,           ,
