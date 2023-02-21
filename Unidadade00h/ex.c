@@ -18,7 +18,7 @@ int recursivo (char vetor[], int resp, int indice)
 int main (void){
     
     char vetor[30];
- for (int  i = 0; i < 30; i++)
+    for (int  i = 0; i < 30; i++)
  {
    scanf("%[^\n]",&vetor[i]);
  }
