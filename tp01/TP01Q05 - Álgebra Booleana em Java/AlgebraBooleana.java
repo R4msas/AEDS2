@@ -21,17 +21,23 @@ public class AlgebraBooleana {
             vetor[c] = str;
             c++;
         } while (sc.hasNextLine() == true);
-        return c + 1;// retorna o tamanho do vetor;
+        return c ;// retorna o tamanho do vetor;
+                
+       
     }
 
-    private static void TransformaStringEmVetorChar(String vetor[])
+    private static void TransformaStringEmVetorChar(String vetor[],int tamanhoDoVetor)
     {
-        for (int c = 0; c < vetor.length; c++)
+        
+        for (int c = 0; c < tamanhoDoVetor ; c++)
         {
+            if(vetor[c].length()>5)
+            {
             char vetorChar[] = new char[vetor[c].length()];
             vetorChar = vetor[c].toCharArray();
             ParseChar(vetorChar);
         }
+    }
 
     }
 
@@ -46,7 +52,7 @@ public class AlgebraBooleana {
         int inicioIndice = 6;// inicia a variável caso seja um caso de duas variáveis
         if (vetorChar[0] == '3')
         {
-            inicioIndice = 8;// altera a variável caso seja de três variáveis
+            inicioIndice = 8;// altera o início da pesquisa, caso seja de três variáveis
         }
         /*
          * analisa cada membro do array e altera o seu valor para o valor de 0 ou 1, dependendo da
@@ -71,23 +77,21 @@ public class AlgebraBooleana {
         {
             if (vetorChar[c] == ')')
             {
-                fimPesq = c;
+                fimPesq = c;//após encontrar a posição do parêntese, guarda-a e procura o primeiro parêntese
                 for (int j = c - 1; j > 0; j--)
                 {
-                    if (vetorChar[j] == '(')
+                    if (vetorChar[j] == '(')//faz processo similar para encontrar o parêntese aberto
                     {
                         inicioPesq = j;
-                        AlgebraBool(inicioPesq, fimPesq, vetorChar);
+                        AlgebraBool(inicioPesq, fimPesq, vetorChar);//de posse das posições no vetor, chama o método que efetua a álgebra booleana
                         break;
                     }
 
                 }
             }
         }
-        if (fimPesq == vetorChar.length - 1)
-        {
             System.out.println(vetorChar[fimPesq]);
-        }
+        
 
 
 
@@ -98,73 +102,51 @@ public class AlgebraBooleana {
         if (vetorChar[inicioPesq - 1] == 't')// somente pode ter esta pesquisa se for um operador
                                              // not
         {
-            
-            for (int c = inicioPesq - 3; c <= fimPesq; c++)
+            for (int c = inicioPesq - 3; c < fimPesq; c++)
             {
                 if (vetorChar[c]=='0')//testa se a proposição é falsa, se for inverte o valor 
                 {
-                    vetorChar[c]='1';
+                    vetorChar[fimPesq]='1';
                 }
                 else if(vetorChar[c]=='1')//testa se é falsa, se for, inverte o valor
                 {
-                    vetorChar[c]='0';
+                    vetorChar[fimPesq]='0';
                 }
-                else{
                 vetorChar[c] = ' ';// apaga todos os caracteres do intervalo que não sejam relevantes
-                }
+                
             }
+            
+            
             
             
         } else if (vetorChar[inicioPesq - 1] == 'd')// operador and
         {
-            int contador=0;
-            for (int c = inicioPesq - 3; c <= fimPesq; c++)
+            vetorChar[fimPesq]='1';//assume que a resposta é verdadeira
+            for (int c = inicioPesq - 3; c < fimPesq; c++)
             {
-                if(vetorChar[c]=='1')
+                if(vetorChar[c]=='0')
                 {
-                    contador++;//caso a proposição seja verdadeira, conta um e apaga o valor atual
-                    vetorChar[c]=' ';
+                vetorChar[fimPesq]='0';//caso uma das proposições seja falsa, altera a resposta para falso
                 }
-                else
-                {
                 vetorChar[c] = ' ';
-                }
-            }
-            if(contador==2)//caso seja verdadeira, informa 1
-            {
-                vetorChar[fimPesq]='1';
-            }
-            else{
-                vetorChar[fimPesq]='0';
             }
            
         } else if (vetorChar[inicioPesq - 1] == 'r')
         {
-            int contador=0;
-            for (int c = inicioPesq - 2; c <= fimPesq; c++)
+            vetorChar[fimPesq]='0';//assume que a resposta será falsa
+            for (int c = inicioPesq - 2; c < fimPesq; c++)
             {
                 if(vetorChar[c]=='1')
                 {
-                    contador++;//conta as proposições verdadeiras
-                    vetorChar[c]=' ';
+                    vetorChar[fimPesq]='1';//caso uma das proposições seja verdadeira, altera a resposta para verdadeiro
+                    
                 }
-                else
-                {
-                vetorChar[c] = ' ';
-                }
+                vetorChar[c]=' ';
+                
             }
-            if(contador==0)//se não houver proposições verdadeiras é gravado como falso
-            {
-                vetorChar[fimPesq]='0';
-            }
-            else{
-                vetorChar[fimPesq]='1';
-            }
-        } else
-        {
-            System.out.println("ERRO no AlgebraBool");
-
         }
+            
+        
         
 
     }
@@ -175,7 +157,7 @@ public class AlgebraBooleana {
         int tamanhoDoVetor = LeituraDoPubIn(vetor);
         String novoVetor[] = new String[tamanhoDoVetor];
         novoVetor = vetor.clone();
-        TransformaStringEmVetorChar(novoVetor);
+        TransformaStringEmVetorChar(novoVetor,tamanhoDoVetor);
 
     }
 }
