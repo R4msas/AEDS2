@@ -1,0 +1,6 @@
+  Complexidade
+  exponencial                 O( 2 )^{ n },%THETA(2^{ n }),%OMEGA(2^{ n })
+  lg                          O( lg(n)) ,%THETA( lg(n) ), %OMEGA( lg(n) )
+  1                           O(1),%THETA(1),%OMEGA(1)
+  n                           O(n),%THETA(n),%OMEGA(n)
+  n²                          O(n^{2}),%THETA(n^{2}),%OMEGA(n^{2})
