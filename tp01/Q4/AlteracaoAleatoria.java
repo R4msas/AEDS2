@@ -19,14 +19,35 @@ a disciplina de Estat´ıstica e Probabilidade faz uma discuss˜ao sobre “alea
 */
 import java.util.*;
 public class AlteracaoAleatoria {
-    public static String AlteracaoDeString(String stringRecebida)
+    public static String AlteraString(String stringRecebida,int tamanhoDaString,Random geradorPseudoRandomico)
     {
-
+        char primeiraLetra, segundaLetra;
+        primeiraLetra = ((char)('a' + (Math.abs(geradorPseudoRandomico.nextInt( )) % 26)));
+        segundaLetra = ((char)('a' + (Math.abs(geradorPseudoRandomico.nextInt( )) % 26)));
+        String stringRandomizada=new String();
+        for (int i = 0; i < tamanhoDaString; i++) {
+            if(stringRecebida.charAt(i) == primeiraLetra)
+            {
+                stringRandomizada +=segundaLetra;
+            }
+            else{
+            
+                stringRandomizada +=stringRecebida.charAt(i);
+            }
+        
     }
-public static void main(String[]args)
-{
-Random gerador=new Random();
-gerador.setSeed(4);
+            return stringRandomizada;
+}
+    public static void main (String[] args){
+        String stringRecebida;
+        stringRecebida=MyIO.readLine();
+        Random geradorPseudoRandomico = new Random();
+        geradorPseudoRandomico.setSeed(4) ;
+        do{
+            int tamanhoDaString = stringRecebida.length();
+            MyIO.println(AlteraString(stringRecebida, tamanhoDaString, geradorPseudoRandomico));
+            stringRecebida = MyIO.readLine();
+        }while (!(stringRecebida.equals("FIM")));
 
 }
     
