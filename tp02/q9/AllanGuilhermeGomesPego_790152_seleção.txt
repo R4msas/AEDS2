@@ -1,0 +1,1 @@
+Número de comparações 820, número de posições 80 , tempo decorrido em nanosegundos :279100
