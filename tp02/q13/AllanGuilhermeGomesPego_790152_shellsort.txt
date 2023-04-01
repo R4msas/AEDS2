@@ -1,1 +1,1 @@
-Número de comparações 40, número de troca de posições 34 , tempo decorrido em nanosegundos :42393178
+Número de comparações 40, número de troca de posições 34 , tempo decorrido em nanosegundos :69331725

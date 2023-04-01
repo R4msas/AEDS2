@@ -338,40 +338,45 @@ public class q13 {
 
     }
 
-    public static String ordenaShellSort(Personagem[] arrayDePersonagens, int posicaoFinalDoArray,int []sequenciaKnuth)
+
+    public static String OrdenaHeapSort(Personagem[] arrayDepersonagens, int posicaoFinalDoArray)
     {
         int contadorPosicao = 0;
         int contadorComparacao = 0; 
         long inicioTempo = System.nanoTime();
-        int posicaoKnuth=0;
-        for(int c=0;sequenciaKnuth[c]<4;c++)//encontra o gap mais efetivo.
-        {
-            posicaoKnuth=c;
-        }
-        for (int c=posicaoKnuth;c>=0;c--)
-        {
-            int gap=sequenciaKnuth[c];
-            for (int i=0;i+gap<posicaoFinalDoArray;i++)
-            {
-                contadorComparacao++;
-                MyIO.println(arrayDePersonagens[i+gap].nome+" ,peso do primeiro: "+arrayDePersonagens[i+gap].peso+"\n"+arrayDePersonagens[i].nome+" peso"+arrayDePersonagens[i+gap].peso);
-                if (arrayDePersonagens[i+gap].peso<arrayDePersonagens[i].peso)
-                {
-                swapPersonagem(arrayDePersonagens,i+gap, i);
-                contadorPosicao++;
-                }
+            for (int i = posicaoFinalDoArray / 2 - 1; i >= 0; i--)
+                heapify(arrayDepersonagens, posicaoFinalDoArray, i);
+            for (int i = posicaoFinalDoArray - 1; i >= 0; i--) {
+                swapPersonagem(arrayDepersonagens, 0, i);
+                heapify(arrayDepersonagens, i, 0);
             }
-        }
-        
-        long fimTempo = System.nanoTime();
+            long fimTempo = System.nanoTime();
         String tempoDecorrido = " , tempo decorrido em nanosegundos :" + (fimTempo - inicioTempo);
         String conteudoArquivo = "Número de comparações " + contadorComparacao
                 + ", número de troca de posições " + contadorPosicao + tempoDecorrido;
         return conteudoArquivo;
     }
+        public static void heapify(Personagem arrayDePersonagens[], int n, int i)
+        {
+            int maior = i; // Inicializa maior como root
+            int esq = 2 * i + 1; 
+            int dir = 2 * i + 2; 
+      
+            if (esq < n && arrayDePersonagens[esq].altura > arrayDePersonagens[maior].altura)
+                maior = esq;
+      
+            if (esq < n && arrayDePersonagens[dir].altura > arrayDePersonagens[maior].altura)
+                maior = dir;
+      
+            if (maior != i) {
+                swapPersonagem(arrayDePersonagens, i, maior);
+      
+                // Recursively heapify the affected sub-tree
+                heapify(arrayDePersonagens, n, maior);
+            }
+        }
     public static void main(String[] args) throws Exception
     {
-        int []sequenciaKnuth={1,4,13,40};
         MyIO.setCharset("UTF-8");
         Personagem arrayDePersonagens[] = new Personagem[100];
         String input = MyIO.readLine();
@@ -384,8 +389,8 @@ public class q13 {
             input = MyIO.readLine().replaceAll("é", "\u00e9");
             posicaoArray++;// cria a próxima posição no array
         }
-        String nomeDoArquivo = "AllanGuilhermeGomesPego_790152_shellsort.txt";
-        Arq.openWriteClose(nomeDoArquivo, ordenaShellSort(arrayDePersonagens, posicaoArray,sequenciaKnuth));
+        String nomeDoArquivo = "790152_heapsort.txt";
+        Arq.openWriteClose(nomeDoArquivo, ordenaHeapSort(arrayDePersonagens, posicaoArray));
 
         for (int c = 0; c < posicaoArray; c++)
         {
