@@ -1,3 +1,8 @@
+/*
+ * Aluno -Allan
+ * Objetivo - Lista com Aloca¸c˜ao Sequencial em Java
+ */
+
 import java.io.RandomAccessFile;
 // import java.util.Scanner;
 

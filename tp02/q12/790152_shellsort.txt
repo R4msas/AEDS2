@@ -1,0 +1,1 @@
+Matricula: 790152	Numero Comparacoes: 2460	Numero Movimentacoes: 557	Tempo Execucao: 0.000000s
