@@ -1,10 +1,15 @@
 /*
  * Autor Allan
+ * ordenação por counting sort
  */
 import java.io.RandomAccessFile;
 
-public class q11 {
+/*
+ * Autor Allan
+ * Objetivo - Ordenação por shellsort
+ */
 
+public class q15 {
     public static class Personagem {
         private String nome;
         private int altura;
@@ -239,18 +244,33 @@ public class q11 {
             return cloned;
         }
     }
-
+    public static class PesoPersonagem{
+        public int quantidadePersonagens;//grava a quantidade de personagens que tem este peso
+        public Personagem enderecoPersonagem[];//cria um vetor de personagens que possuem o mesmo peso.
+        PesoPersonagem()
+        {
+            quantidadePersonagens=0;
+            enderecoPersonagem=new Personagem[20];
+        }
+    }
     /*
      * public static void retiraPilha(int posicaoArray, Personagem[] arrayDePersonagens) {
      * MyIO.println("(R) " + arrayDePersonagens[posicaoArray].nome);
      * arrayDePersonagens[posicaoArray] = null; }
      */
-    public static boolean ehMenorQueAString(String primeiraString, String segundaString)
+    public static boolean comparaString(String primeiraString, String segundaString)//retorna se a primeira string é menor que a segunda
     {
         boolean resposta = false;
         int c = 0;
-       
-            while (c < 4)
+        int tamanhoDaMenorString;
+       if (primeiraString.length()<segundaString.length())
+       {
+        tamanhoDaMenorString=primeiraString.length();
+       }
+       else{
+        tamanhoDaMenorString=segundaString.length();
+       }
+            while (c < tamanhoDaMenorString)
             {
                 if (primeiraString.charAt(c) == segundaString.charAt(c))
                 {
@@ -258,37 +278,35 @@ public class q11 {
                 } else if (primeiraString.charAt(c) < segundaString.charAt(c))
                 {
                     resposta = true;
-                    c = 4;
+                    c = tamanhoDaMenorString;
                 } else
                 {
-                    c = 4;
+                    c = tamanhoDaMenorString;
                 }
             }
        
         return resposta;
     }
 
-    public static String ordenaInsercao(Personagem[] arrayDePersonagens, int posicaoFinalDoArray)
+    public static void ordenaInsercao(Personagem[] arrayDePersonagens, int posicaoFinalDoArray, int contador[])
     {
-        int contadorPosicao = 0;
-        int contadorComparacao = 0;
-        long inicioTempo = System.nanoTime();
         boolean shift = false;
         int posicaoShift = 0;
 
-        for (int primeiraPosicaoDesordenada =
-                1; primeiraPosicaoDesordenada < posicaoFinalDoArray; primeiraPosicaoDesordenada++)
+        for (int primeiraPosicaoDesordenada =1; primeiraPosicaoDesordenada < posicaoFinalDoArray; primeiraPosicaoDesordenada++)
         {
+
             shift=false;
             Personagem auxiliar = new Personagem();
             for (int ordenada = primeiraPosicaoDesordenada - 1; ordenada >= 0; ordenada--)
             {
-                contadorComparacao++;
                /* MyIO.println("primeira posicao desordenada:"
                         + arrayDePersonagens[primeiraPosicaoDesordenada].anoNascimento
                         + ", posicao ordenada " + arrayDePersonagens[ordenada].anoNascimento); */
-                if (ehMenorQueAString(arrayDePersonagens[primeiraPosicaoDesordenada].anoNascimento,
-                        arrayDePersonagens[ordenada].anoNascimento))
+                contador[0]+=1;
+                if ((arrayDePersonagens[primeiraPosicaoDesordenada].altura==
+                arrayDePersonagens[ordenada].altura)&&comparaString(arrayDePersonagens[primeiraPosicaoDesordenada].nome,
+                arrayDePersonagens[ordenada].nome))
                 {
                     //MyIO.println("posicao menor, efetua troca do shift");
                     posicaoShift = ordenada;
@@ -304,16 +322,15 @@ public class q11 {
             }
             if (shift)
             {
+                contador[1]+=1;
                /*  MyIO.println(
                         "efetua o shift de " + primeiraPosicaoDesordenada + "até " + posicaoShift); */
                 auxiliar = arrayDePersonagens[primeiraPosicaoDesordenada];
                 for (int j = primeiraPosicaoDesordenada; j > posicaoShift; j--)
                 {
                     arrayDePersonagens[j] = arrayDePersonagens[j - 1];
-                    contadorPosicao++;
                 }
                 arrayDePersonagens[posicaoShift] = auxiliar;
-                contadorPosicao++;
               /*   MyIO.println("array ordenado até o momento");
                 for (int c = 0; c <= primeiraPosicaoDesordenada; c++)
                 {
@@ -322,20 +339,142 @@ public class q11 {
             }
 
         }
+       /*  long fimTempo = System.nanoTime();
+        String tempoDecorrido = " , tempo decorrido em nanosegundos :" + (fimTempo - inicioTempo);
+        String conteudoArquivo = "Número de comparações " + contadorComparacao
+                + ", número de troca de posições " + contadorPosicao + tempoDecorrido;
+        return conteudoArquivo; */
+    }
+    
+    public static void swapPersonagem(Personagem[] arrayDePersonagens, int posicaoA,int posicaoB)
+    {
+        Personagem aux= new Personagem();
+        aux=arrayDePersonagens[posicaoA];
+        arrayDePersonagens[posicaoA]=arrayDePersonagens[posicaoB];
+        arrayDePersonagens[posicaoB]=aux;
+
+    }
+
+
+    public static String ordenaHeapSort(Personagem[] arrayDepersonagens, int posicaoFinalDoArray)
+    {
+        int [] contador={0,0};//índice 0 comparações, 1 é movimentações
+        
+        long inicioTempo = System.nanoTime();
+            for (int i = (posicaoFinalDoArray / 2) - 1; i >= 0; i--)
+            {
+                heapify(arrayDepersonagens, posicaoFinalDoArray, i,contador);//cria o max heap
+            }   
+            for (int i = posicaoFinalDoArray - 1; i >= 0; i--) {
+                swapPersonagem(arrayDepersonagens, 0, i);
+                contador[1]+=1;
+                heapify(arrayDepersonagens, i, 0,contador);
+            }
+        ordenaInsercao(arrayDepersonagens, posicaoFinalDoArray,contador);
         long fimTempo = System.nanoTime();
+        int contadorPosicao = contador[1];
+        int contadorComparacao = contador[0]; 
         String tempoDecorrido = " , tempo decorrido em nanosegundos :" + (fimTempo - inicioTempo);
         String conteudoArquivo = "Número de comparações " + contadorComparacao
                 + ", número de troca de posições " + contadorPosicao + tempoDecorrido;
         return conteudoArquivo;
     }
-
-    public static void main(String[] args) throws Exception
+      
+    public static void heapify(Personagem arrayDePersonagens[], int n, int root,int []contador)
+        {
+            
+            int maior = root; // Inicializa maior como root
+            int esq = 2 * root + 1; 
+            int dir = 2 * root + 2; 
+            // MyIO.println("tamanho do Array"+arrayDePersonagens.length+"root: "+root+"esq: "+esq+" dir"+dir);
+            contador[0]+=1;
+            
+            if ((esq < n) && (arrayDePersonagens[esq].altura > arrayDePersonagens[maior].altura))
+                maior = esq;
+            contador[0]+=1;
+            if (dir < n && arrayDePersonagens[dir].altura > arrayDePersonagens[maior].altura)
+                maior = dir;
+                contador[0]+=2;//efetua duas comparações por chamada do heapfy
+            if (maior != root) {
+                /* MyIO.println("Root: nome"+arrayDePersonagens[root].nome+", altura "+arrayDePersonagens[root].altura);
+                MyIO.println("Esquerda: nome"+arrayDePersonagens[esq].nome+", altura "+arrayDePersonagens[esq].altura);
+                MyIO.println("Direita: nome"+arrayDePersonagens[dir].nome+", altura "+arrayDePersonagens[dir].altura);
+                MyIO.println("troca entre "+arrayDePersonagens[root].nome+"e o maior "+arrayDePersonagens[maior].nome); */
+                swapPersonagem(arrayDePersonagens, root, maior);
+                contador[1]+=1;
+                heapify(arrayDePersonagens, n, maior,contador);//recursivamente chama heapify para o resto do heap afetado
+            }
+        }
+    public static int encontraMaiorPeso(Personagem arrayDePersonagens[],int posicaoFinalDoArray, int contador[])
     {
+        double maior=arrayDePersonagens[0].peso;
+        for(int c=1;c<posicaoFinalDoArray;c++)
+        {
+            contador[0]+=1;
+            if(arrayDePersonagens[c].peso>maior)
+            {
+                maior=arrayDePersonagens[c].peso;
+            }
+        }
+        int maiorInt=(int)maior;
+        return maiorInt;
+    }
+    public static String ordenaCountingSort(Personagem arrayDePersonagens[], int posicaoFinalDoArray,int []contador)
+    {
+        long inicioTempo = System.nanoTime();
+        int pesoAtual;
+        int maiorPeso=encontraMaiorPeso(arrayDePersonagens, posicaoFinalDoArray, contador);
+        Personagem vetorOrdenado[]=new Personagem[posicaoFinalDoArray];
+        PesoPersonagem vetorPeso[]=new PesoPersonagem[maiorPeso+1];
+        for(int c=0;c<=maiorPeso;c++)
+        {
+            vetorPeso[c]=new PesoPersonagem();//inicializa os valores do vetor;
+        }
+//        MyIO.println("maior peso é "+maiorPeso);
+        for(int c=0;c<posicaoFinalDoArray;c++)
+        {
+            pesoAtual=(int)arrayDePersonagens[c].peso;
+            int posicaoNoVetor=vetorPeso[pesoAtual].quantidadePersonagens;
+            vetorPeso[pesoAtual].enderecoPersonagem[posicaoNoVetor]=new Personagem();//aloca a memória para um novo personagem
+            vetorPeso[pesoAtual].enderecoPersonagem[posicaoNoVetor]=arrayDePersonagens[c];//grava o endereço do personagem atual para posteriormente ordená-lo
+            vetorPeso[pesoAtual].quantidadePersonagens+=1;//atualiza o número de personagens com o mesmo peso
+            contador[1]+=3;
+            
+        }
+        int posicaoAtual=0;
+        for(int c=0;c<=maiorPeso;c++)
+        {
+            for(int i=0;i<vetorPeso[c].quantidadePersonagens;i++)//verifica se o peso listado possui algum personagem
+            {
+                vetorOrdenado[posicaoAtual]=vetorPeso[c].enderecoPersonagem[i];//grava na posicao correta o endereço do personagem;
+                posicaoAtual++;
+            }
+ //       MyIO.println("posicao atual é "+posicaoAtual);//erase
+        
+        }
+        for(int c=0;c<posicaoFinalDoArray;c++)
+        {
+            arrayDePersonagens[c]=vetorOrdenado[c];
+            contador[1]+=1;
+ //           MyIO.println(arrayDePersonagens[c].nome);
+        }
 
+        int contadorPosicao = contador[1];
+        int contadorComparacao = contador[0]; 
+        long fimTempo = System.nanoTime();
+        String tempoDecorrido = " , tempo decorrido em nanosegundos :" + (fimTempo - inicioTempo);
+        String conteudoArquivo = "Número de comparações " + contadorComparacao
+                + ", número de troca de posições " + contadorPosicao + tempoDecorrido;
+        return conteudoArquivo;
+        
+    }
+        public static void main(String[] args) throws Exception
+    {
         MyIO.setCharset("UTF-8");
         Personagem arrayDePersonagens[] = new Personagem[100];
         String input = MyIO.readLine();
         int posicaoArray = 0;
+        int contador []={0,0};
 
         while (!input.equals("FIM"))
         {
@@ -344,8 +483,8 @@ public class q11 {
             input = MyIO.readLine().replaceAll("é", "\u00e9");
             posicaoArray++;// cria a próxima posição no array
         }
-        String nomeDoArquivo = "AllanGuilhermeGomesPego_790152_inserção.txt";
-        Arq.openWriteClose(nomeDoArquivo, ordenaInsercao(arrayDePersonagens, posicaoArray));
+        String nomeDoArquivo = "790152_countingSort.txt";
+        Arq.openWriteClose(nomeDoArquivo, ordenaCountingSort(arrayDePersonagens, posicaoArray, contador));
 
         for (int c = 0; c < posicaoArray; c++)
         {
@@ -353,16 +492,4 @@ public class q11 {
         }
 
     }
-
-    public static void print(String format, Object... args)
-    {
-        System.out.printf(format, args);
-    }
-
-    public static void printf(String format, Object... args)
-    {
-        System.out.printf(format, args);
-        System.out.println();
-    }
-
 }
