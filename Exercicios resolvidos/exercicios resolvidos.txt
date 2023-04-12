@@ -1,0 +1,16 @@
+exercicio resolvido 2.
+
+if(primeiro==ultimo)
+{
+throw new Exception ("Erro!");
+}
+int maior =primeiro.prox.elemento;
+celula tmp =primeiro.prox.prox;
+while(tmp!=null){
+if(tmp.elemento>maior)
+{
+maior=tmp.elemento;
+}
+
+
+
