@@ -3,10 +3,27 @@
  * Objetivo - Ordenação por shellsort
  */
 import java.io.RandomAccessFile;
+public class Celula{
+    private Personagem atual;
+    private Personagem prox;
+    public Personagem getAtual() {
+        return atual;
+    }
+    public void setAtual(Personagem atual) {
+        this.atual = atual;
+    }
+    public Personagem getProx() {
+        return prox;
+    }
+    public void setProx(Personagem prox) {
+        this.prox = prox;
+    }   
+    
+}
 
-public class q13 {
+public class q1 {
 
-    public static class Personagem {
+    public class Personagem {
         private String nome;
         private int altura;
         private double peso;
@@ -246,7 +263,7 @@ public class q13 {
      * MyIO.println("(R) " + arrayDePersonagens[posicaoArray].nome);
      * arrayDePersonagens[posicaoArray] = null; }
      */
-    public static boolean comparaString(String primeiraString, String segundaString)//retorna se a primeira string é menor que a segunda
+    public boolean comparaString(String primeiraString, String segundaString)//retorna se a primeira string é menor que a segunda
     {
         boolean resposta = false;
         int c = 0;
@@ -276,7 +293,7 @@ public class q13 {
         return resposta;
     }
 
-    public static void ordenaInsercao(Personagem[] arrayDePersonagens, int posicaoFinalDoArray, int contador[])
+    public void ordenaInsercao(Personagem[] arrayDePersonagens, int posicaoFinalDoArray, int contador[])
     {
         boolean shift = false;
         int posicaoShift = 0;
@@ -334,7 +351,7 @@ public class q13 {
         return conteudoArquivo; */
     }
     
-    public static void swapPersonagem(Personagem[] arrayDePersonagens, int posicaoA,int posicaoB)
+    public void swapPersonagem(Personagem[] arrayDePersonagens, int posicaoA,int posicaoB)
     {
         Personagem aux= new Personagem();
         aux=arrayDePersonagens[posicaoA];
@@ -344,7 +361,7 @@ public class q13 {
     }
 
 
-    public static String ordenaHeapSort(Personagem[] arrayDepersonagens, int posicaoFinalDoArray)
+    public String ordenaHeapSort(Personagem[] arrayDepersonagens, int posicaoFinalDoArray)
     {
         int [] contador={0,0};//índice 0 comparações, 1 é movimentações
         
@@ -367,7 +384,7 @@ public class q13 {
                 + ", número de troca de posições " + contadorPosicao + tempoDecorrido;
         return conteudoArquivo;
     }
-        public static void heapify(Personagem arrayDePersonagens[], int n, int root,int []contador)
+        public void heapify(Personagem arrayDePersonagens[], int n, int root,int []contador)
         {
             
             int maior = root; // Inicializa maior como root

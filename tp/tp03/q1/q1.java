@@ -260,7 +260,7 @@ public class q1 {
         }
     }
 
-    public static void encontraComando(String stringRecebida, Celula tmp, Celula primeiro, Celula ultimo) throws Exception
+    public static void encontraComando(String stringRecebida, Celula tmp, Celula controle[0], Celula controle[]) throws Exception
     {
 
         switch (stringRecebida.substring(0, 2)) {
@@ -268,7 +268,7 @@ public class q1 {
                 Personagem personagem=new Personagem();
                 personagem.ler(stringRecebida.substring(3));
                 tmp.atual=personagem;
-                inserirInicio(tmp, primeiro);
+                inserirInicio(tmp, controle[0]);
                 personagem=null;
                 break;
             case "I*":
@@ -276,70 +276,70 @@ public class q1 {
                 tmp.atual.ler(stringRecebida.substring(stringRecebida.indexOf('/', 0)));
                 if((Integer.parseInt(stringRecebida.substring(3)))==0)
                 {
-                    inserirInicio(tmp, primeiro);
+                    inserirInicio(tmp, controle[0]);
                 }
-                inserirNaPosicao(tmp,primeiro, ultimo, Integer.parseInt(stringRecebida.substring(3)));
+                inserirNaPosicao(tmp,controle[0], controle, Integer.parseInt(stringRecebida.substring(3)));
                 break;
             case "IF":
                 Personagem personagemTmp=new Personagem();
                 personagemTmp.ler(stringRecebida.substring(3));
-                inserirFinal(tmp, ultimo);
+                inserirFinal(tmp, controle);
                 personagemTmp=null;
                 break;
             case "RI":
-            if(primeiro==ultimo)
+            if(controle[0]==controle[1])
             {
                 MyIO.println("ERRO! lista vazia");
             }
             else{
-                System.out.println("(R) " + primeiro.prox.atual.nome);
-                removerInicio(primeiro);
+                System.out.println("(R) " + controle[0].prox.atual.nome);
+                removerInicio(controle[0]);
                 break;
             }
             case "R*":
-                System.out.println("(R) " + removerNaPosicao(primeiro, ultimo, Integer.parseInt(stringRecebida.substring(3))));
+                System.out.println("(R) " + removerNaPosicao(controle[0], controle, Integer.parseInt(stringRecebida.substring(3))));
                 break;
             case "RF":
-            if(primeiro==ultimo)
+            if(controle[0]==controle[1])
             {
                 MyIO.println("ERRO! Lista vazia");
             }
             else{
-                System.out.println("(R) " + ultimo.atual.getNome());
-                removerFim(primeiro, ultimo);
+                System.out.println("(R) " + controle[1].atual.getNome());
+                removerFim(controle[0], controle);
                 break;
             }
         }
     }
-    public static void inserirInicio(Celula tmp, Celula primeiro)  {
-    tmp.prox= primeiro.prox;
-    primeiro.prox=tmp;
+    public static void inserirInicio(Celula tmp, Celula controle[])  {
+    tmp.prox= controle[0].prox;
+    controle[0].prox=tmp;
     tmp=null;     
 
     }
-    public static void inserirFinal(Personagem personagem, Celula tmp, Celula ultimo)
+    public static void inserirFinal(Personagem personagem, Celula tmp, Celula []controle)
     {
         tmp.setAtual(personagem);
-        ultimo.prox= tmp;
-        ultimo=tmp;
+        controle[1].prox= tmp;
+        controle[1]=tmp;
         tmp=null;
 
     }
-    public static void inserirFinal(Celula tmp, Celula ultimo)
+    public static void inserirFinal(Celula tmp, Celula controle[])
     {
 
-        ultimo.prox= tmp;
-        ultimo=ultimo.prox;
+        controle[1].prox= tmp;
+        controle[1]=tmp;
         tmp=null;
 
     }
-    public static void inserirNaPosicao(Celula tmp, Celula primeiro, Celula ultimo, int posicaoDesejada)  {
+    public static void inserirNaPosicao(Celula tmp, Celula controle[0], Celula controle[], int posicaoDesejada)  {
         Celula temporaria=new Celula();
         int posicao=1;
-        temporaria=primeiro.prox;
+        temporaria=controle[0].prox;
         while(posicao<posicaoDesejada)
         {
-        if(temporaria==ultimo)
+        if(temporaria==controle[1])
         {
             MyIO.println("ERRO! Index out of bounds");
             posicao=posicaoDesejada;
@@ -354,31 +354,31 @@ public class q1 {
         temporaria.prox=tmp;
         tmp=temporaria=null;
     }  
-    public static void removerInicio(Celula primeiro)  {
+    public static void removerInicio(Celula controle[0])  {
         Celula temporaria=new Celula();
-        temporaria=primeiro.prox;
-        primeiro.prox=temporaria.prox;
+        temporaria=controle[0].prox;
+        controle[0].prox=temporaria.prox;
         temporaria=null;
     }
-    public static void removerFim(Celula primeiro, Celula ultimo) {
-        Celula temporaria=primeiro.prox;
-        while(temporaria.prox!=ultimo)
+    public static void removerFim(Celula controle[0], Celula controle[]) {
+        Celula temporaria=controle[0].prox;
+        while(temporaria.prox!=controle[1])
         {
             temporaria.prox=temporaria.prox.prox;
         }
-        ultimo=temporaria;
-        ultimo.prox=temporaria=null;
+        controle[1]=temporaria;
+        controle[1].prox=temporaria=null;
 
 
     }
-    public static String removerNaPosicao(Celula primeiro, Celula ultimo,int posicaoDesejada)  {
+    public static String removerNaPosicao(Celula controle[0], Celula controle[],int posicaoDesejada)  {
 
         //teeste
         
         Celula temporaria=new Celula();
         int posicao=1;
-        temporaria=primeiro.prox;
-        while(posicao<posicaoDesejada||temporaria.prox==ultimo)
+        temporaria=controle[0].prox;
+        while(posicao<posicaoDesejada||temporaria.prox==controle[1])
         {
             temporaria=temporaria.prox;
             posicao++;
@@ -395,19 +395,17 @@ public class q1 {
     {
         MyIO.setCharset("UTF-8");
         String input = MyIO.readLine();
-        Celula primeiro=new Celula();
+        Celula controle[]=new Celula[2];//como entraremos em diferentes escopos, criaremos um vetor de Celulas com a posicao 0 para primeiro e 1 para ultimo
         Celula tmp=new Celula();
-        Celula ultimo=primeiro;
-        primeiro.prox=tmp;
+        controle[1]=controle[0]=tmp;//primeiro e último apontam para a mesma célula
 
         while (!input.equals("FIM"))
         {
             Personagem personagem =new Personagem();
             personagem.ler(input);
             tmp.atual=personagem;
-            inserirFinal(personagem, tmp, ultimo);       
+            inserirFinal(personagem, tmp, controle);       
             input = MyIO.readLine().replaceAll("é", "\u00e9");
-            ultimo=ultimo.prox;
             tmp=new Celula();
         }
         int repeticoes=MyIO.readInt();
@@ -415,10 +413,10 @@ public class q1 {
         {
             input =MyIO.readLine();
             tmp=new Celula();
-            encontraComando(input,tmp, primeiro, ultimo);
+            encontraComando(input,tmp, controle[0], controle);
             repeticoes--;
         }
-        tmp=primeiro;
+        tmp=controle[0];
        while(tmp!=ultimo)
        {
         tmp=tmp.prox;
