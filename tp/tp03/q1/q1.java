@@ -4,10 +4,28 @@ Trabalho Pr´atico II usando lista dinˆamica simples em Java.
 Autor  - Allan
  */
 import java.io.RandomAccessFile;
-
 public class q1 {
-
-    public class Personagem {
+    public static class Celula{
+        private Personagem atual;
+        private Celula prox;
+        public Personagem getAtual()
+        {
+            return atual;
+        }
+        public void setAtual(Personagem atual)
+        {
+            this.atual = atual;
+        }
+        public Celula getProx()
+        {
+            return prox;
+        }
+        public void setProx(Celula prox)
+        {
+            this.prox = prox;
+        }
+    }
+    public static class Personagem {
         private String nome;
         private int altura;
         private double peso;
@@ -17,16 +35,7 @@ public class q1 {
         private String anoNascimento;
         private String genero;
         private String homeworld;
-        private Personagem prox;
-
-        public Personagem getProx() {
-            return prox;
-        }
-
-        public void setProx(Personagem prox) {
-            this.prox = prox;
-        }
-
+      
         Personagem(String nome, int altura, double peso, String corDoCabelo, String corDaPele,
                 String corDosOlhos, String anoNascimento, String genero, String homeworld) {
             setNome(nome);
@@ -151,7 +160,7 @@ public class q1 {
             return homeworld;
         }
 
-        public void Ler(String filePath) throws Exception
+        public void ler(String filePath) throws Exception
         {
 
             RandomAccessFile file = new RandomAccessFile(filePath, "r");
@@ -211,7 +220,7 @@ public class q1 {
             }
         }
 
-        public void Imprimir()
+        public void imprimir()
         {
             MyIO.setCharset("UTF-8");
             MyIO.print(" ## " + this.nome);
@@ -251,178 +260,170 @@ public class q1 {
         }
     }
 
-    /*
-     * public static void retiraPilha(int posicaoArray, Personagem[] arrayDePersonagens) {
-     * MyIO.println("(R) " + arrayDePersonagens[posicaoArray].nome);
-     * arrayDePersonagens[posicaoArray] = null; }
-     */
-    public static boolean comparaString(String primeiraString, String segundaString)//retorna se a primeira string é menor que a segunda
+    public static void encontraComando(String stringRecebida, Celula tmp, Celula primeiro, Celula ultimo) throws Exception
     {
-        boolean resposta = false;
-        int c = 0;
-        int tamanhoDaMenorString;
-       if (primeiraString.length()<segundaString.length())
-       {
-        tamanhoDaMenorString=primeiraString.length();
-       }
-       else{
-        tamanhoDaMenorString=segundaString.length();
-       }
-            while (c < tamanhoDaMenorString)
-            {
-                if (primeiraString.charAt(c) == segundaString.charAt(c))
+
+        switch (stringRecebida.substring(0, 2)) {
+            case "II":
+                Personagem personagem=new Personagem();
+                personagem.ler(stringRecebida.substring(3));
+                tmp.atual=personagem;
+                inserirInicio(tmp, primeiro);
+                personagem=null;
+                break;
+            case "I*":
+            
+                tmp.atual.ler(stringRecebida.substring(stringRecebida.indexOf('/', 0)));
+                if((Integer.parseInt(stringRecebida.substring(3)))==0)
                 {
-                    c++;
-                } else if (primeiraString.charAt(c) < segundaString.charAt(c))
-                {
-                    resposta = true;
-                    c = tamanhoDaMenorString;
-                } else
-                {
-                    c = tamanhoDaMenorString;
+                    inserirInicio(tmp, primeiro);
                 }
+                inserirNaPosicao(tmp,primeiro, ultimo, Integer.parseInt(stringRecebida.substring(3)));
+                break;
+            case "IF":
+                Personagem personagemTmp=new Personagem();
+                personagemTmp.ler(stringRecebida.substring(3));
+                inserirFinal(tmp, ultimo);
+                personagemTmp=null;
+                break;
+            case "RI":
+            if(primeiro==ultimo)
+            {
+                MyIO.println("ERRO! lista vazia");
             }
-       
+            else{
+                System.out.println("(R) " + primeiro.prox.atual.nome);
+                removerInicio(primeiro);
+                break;
+            }
+            case "R*":
+                System.out.println("(R) " + removerNaPosicao(primeiro, ultimo, Integer.parseInt(stringRecebida.substring(3))));
+                break;
+            case "RF":
+            if(primeiro==ultimo)
+            {
+                MyIO.println("ERRO! Lista vazia");
+            }
+            else{
+                System.out.println("(R) " + ultimo.atual.getNome());
+                removerFim(primeiro, ultimo);
+                break;
+            }
+        }
+    }
+    public static void inserirInicio(Celula tmp, Celula primeiro)  {
+    tmp.prox= primeiro.prox;
+    primeiro.prox=tmp;
+    tmp=null;     
+
+    }
+    public static void inserirFinal(Personagem personagem, Celula tmp, Celula ultimo)
+    {
+        tmp.setAtual(personagem);
+        ultimo.prox= tmp;
+        ultimo=tmp;
+        tmp=null;
+
+    }
+    public static void inserirFinal(Celula tmp, Celula ultimo)
+    {
+
+        ultimo.prox= tmp;
+        ultimo=ultimo.prox;
+        tmp=null;
+
+    }
+    public static void inserirNaPosicao(Celula tmp, Celula primeiro, Celula ultimo, int posicaoDesejada)  {
+        Celula temporaria=new Celula();
+        int posicao=1;
+        temporaria=primeiro.prox;
+        while(posicao<posicaoDesejada)
+        {
+        if(temporaria==ultimo)
+        {
+            MyIO.println("ERRO! Index out of bounds");
+            posicao=posicaoDesejada;
+        }
+        else
+        {
+            temporaria=temporaria.prox;
+            posicao++;
+        }
+        }
+        tmp.prox=temporaria.prox;
+        temporaria.prox=tmp;
+        tmp=temporaria=null;
+    }  
+    public static void removerInicio(Celula primeiro)  {
+        Celula temporaria=new Celula();
+        temporaria=primeiro.prox;
+        primeiro.prox=temporaria.prox;
+        temporaria=null;
+    }
+    public static void removerFim(Celula primeiro, Celula ultimo) {
+        Celula temporaria=primeiro.prox;
+        while(temporaria.prox!=ultimo)
+        {
+            temporaria.prox=temporaria.prox.prox;
+        }
+        ultimo=temporaria;
+        ultimo.prox=temporaria=null;
+
+
+    }
+    public static String removerNaPosicao(Celula primeiro, Celula ultimo,int posicaoDesejada)  {
+
+        //teeste
+        
+        Celula temporaria=new Celula();
+        int posicao=1;
+        temporaria=primeiro.prox;
+        while(posicao<posicaoDesejada||temporaria.prox==ultimo)
+        {
+            temporaria=temporaria.prox;
+            posicao++;
+        }
+        Celula aux=new Celula();
+        aux=temporaria.prox;
+        String resposta=temporaria.prox.atual.getNome();
+        temporaria.prox=aux.prox;
+        aux=null;
         return resposta;
     }
-
-    public static void ordenaInsercao(Personagem[] arrayDePersonagens, int posicaoFinalDoArray, int contador[])
-    {
-        boolean shift = false;
-        int posicaoShift = 0;
-
-        for (int primeiraPosicaoDesordenada =1; primeiraPosicaoDesordenada < posicaoFinalDoArray; primeiraPosicaoDesordenada++)
-        {
-
-            shift=false;
-            Personagem auxiliar = new Personagem();
-            for (int ordenada = primeiraPosicaoDesordenada - 1; ordenada >= 0; ordenada--)
-            {
-               /* MyIO.println("primeira posicao desordenada:"
-                        + arrayDePersonagens[primeiraPosicaoDesordenada].anoNascimento
-                        + ", posicao ordenada " + arrayDePersonagens[ordenada].anoNascimento); */
-                contador[0]+=1;
-                if ((arrayDePersonagens[primeiraPosicaoDesordenada].altura==
-                arrayDePersonagens[ordenada].altura)&&comparaString(arrayDePersonagens[primeiraPosicaoDesordenada].nome,
-                arrayDePersonagens[ordenada].nome))
-                {
-                    //MyIO.println("posicao menor, efetua troca do shift");
-                    posicaoShift = ordenada;
-                    shift = true;
-                } else if (shift)
-                {
-                    break;
-                }
-                else         
-                {
-                    ordenada = -1;
-                }
-            }
-            if (shift)
-            {
-                contador[1]+=1;
-               /*  MyIO.println(
-                        "efetua o shift de " + primeiraPosicaoDesordenada + "até " + posicaoShift); */
-                auxiliar = arrayDePersonagens[primeiraPosicaoDesordenada];
-                for (int j = primeiraPosicaoDesordenada; j > posicaoShift; j--)
-                {
-                    arrayDePersonagens[j] = arrayDePersonagens[j - 1];
-                }
-                arrayDePersonagens[posicaoShift] = auxiliar;
-              /*   MyIO.println("array ordenado até o momento");
-                for (int c = 0; c <= primeiraPosicaoDesordenada; c++)
-                {
-                    arrayDePersonagens[c].Imprimir();
-                } */
-            }
-
-        }
-       /*  long fimTempo = System.nanoTime();
-        String tempoDecorrido = " , tempo decorrido em nanosegundos :" + (fimTempo - inicioTempo);
-        String conteudoArquivo = "Número de comparações " + contadorComparacao
-                + ", número de troca de posições " + contadorPosicao + tempoDecorrido;
-        return conteudoArquivo; */
-    }
     
-    public static void swapPersonagem(Personagem[] arrayDePersonagens, int posicaoA,int posicaoB)
-    {
-        Personagem aux= new Personagem();
-        aux=arrayDePersonagens[posicaoA];
-        arrayDePersonagens[posicaoA]=arrayDePersonagens[posicaoB];
-        arrayDePersonagens[posicaoB]=aux;
-
-    }
-
-
-    public static String ordenaHeapSort(Personagem[] arrayDepersonagens, int posicaoFinalDoArray)
-    {
-        int [] contador={0,0};//índice 0 comparações, 1 é movimentações
-        
-        long inicioTempo = System.nanoTime();
-            for (int i = (posicaoFinalDoArray / 2) - 1; i >= 0; i--)
-            {
-                heapify(arrayDepersonagens, posicaoFinalDoArray, i,contador);//cria o max heap
-            }   
-            for (int i = posicaoFinalDoArray - 1; i >= 0; i--) {
-                swapPersonagem(arrayDepersonagens, 0, i);
-                contador[1]+=1;
-                heapify(arrayDepersonagens, i, 0,contador);
-            }
-        ordenaInsercao(arrayDepersonagens, posicaoFinalDoArray,contador);
-        long fimTempo = System.nanoTime();
-        int contadorPosicao = contador[1];
-        int contadorComparacao = contador[0]; 
-        String tempoDecorrido = " , tempo decorrido em nanosegundos :" + (fimTempo - inicioTempo);
-        String conteudoArquivo = "Número de comparações " + contadorComparacao
-                + ", número de troca de posições " + contadorPosicao + tempoDecorrido;
-        return conteudoArquivo;
-    }
-        public static void heapify(Personagem arrayDePersonagens[], int n, int root,int []contador)
-        {
-            
-            int maior = root; // Inicializa maior como root
-            int esq = 2 * root + 1; 
-            int dir = 2 * root + 2; 
-            // MyIO.println("tamanho do Array"+arrayDePersonagens.length+"root: "+root+"esq: "+esq+" dir"+dir);
-            contador[0]+=1;
-            
-            if ((esq < n) && (arrayDePersonagens[esq].altura > arrayDePersonagens[maior].altura))
-                maior = esq;
-            contador[0]+=1;
-            if (dir < n && arrayDePersonagens[dir].altura > arrayDePersonagens[maior].altura)
-                maior = dir;
-                contador[0]+=2;//efetua duas comparações por chamada do heapfy
-            if (maior != root) {
-                /* MyIO.println("Root: nome"+arrayDePersonagens[root].nome+", altura "+arrayDePersonagens[root].altura);
-                MyIO.println("Esquerda: nome"+arrayDePersonagens[esq].nome+", altura "+arrayDePersonagens[esq].altura);
-                MyIO.println("Direita: nome"+arrayDePersonagens[dir].nome+", altura "+arrayDePersonagens[dir].altura);
-                MyIO.println("troca entre "+arrayDePersonagens[root].nome+"e o maior "+arrayDePersonagens[maior].nome); */
-                swapPersonagem(arrayDePersonagens, root, maior);
-                contador[1]+=1;
-                heapify(arrayDePersonagens, n, maior,contador);//recursivamente chama heapify para o resto do heap afetado
-            }
-        }
-    public static void main(String[] args) throws Exception
+        public static void main(String[] args) throws Exception
     {
         MyIO.setCharset("UTF-8");
-        Personagem arrayDePersonagens[] = new Personagem[100];
         String input = MyIO.readLine();
-        int posicaoArray = 0;
+        Celula primeiro=new Celula();
+        Celula tmp=new Celula();
+        Celula ultimo=primeiro;
+        primeiro.prox=tmp;
 
         while (!input.equals("FIM"))
         {
-            arrayDePersonagens[posicaoArray] = new Personagem();
-            arrayDePersonagens[posicaoArray].Ler(input);
+            Personagem personagem =new Personagem();
+            personagem.ler(input);
+            tmp.atual=personagem;
+            inserirFinal(personagem, tmp, ultimo);       
             input = MyIO.readLine().replaceAll("é", "\u00e9");
-            posicaoArray++;// cria a próxima posição no array
+            ultimo=ultimo.prox;
+            tmp=new Celula();
         }
-        String nomeDoArquivo = "790152_heapsort.txt";
-        Arq.openWriteClose(nomeDoArquivo, ordenaHeapSort(arrayDePersonagens, posicaoArray));
-
-        for (int c = 0; c < posicaoArray; c++)
+        int repeticoes=MyIO.readInt();
+        while(repeticoes>0)
         {
-            arrayDePersonagens[c].Imprimir();
+            input =MyIO.readLine();
+            tmp=new Celula();
+            encontraComando(input,tmp, primeiro, ultimo);
+            repeticoes--;
         }
+        tmp=primeiro;
+       while(tmp!=ultimo)
+       {
+        tmp=tmp.prox;
+        tmp.atual.imprimir();
+       }
 
     }
 }
