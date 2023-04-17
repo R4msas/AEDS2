@@ -260,7 +260,7 @@ public class q1 {
         }
     }
 
-    public static void encontraComando(String stringRecebida, Celula tmp, Celula controle[0], Celula controle[]) throws Exception
+    public static void encontraComando(String stringRecebida, Celula tmp, Celula controle[]) throws Exception
     {
 
         switch (stringRecebida.substring(0, 2)) {
@@ -268,7 +268,7 @@ public class q1 {
                 Personagem personagem=new Personagem();
                 personagem.ler(stringRecebida.substring(3));
                 tmp.atual=personagem;
-                inserirInicio(tmp, controle[0]);
+                inserirInicio(tmp, controle);
                 personagem=null;
                 break;
             case "I*":
@@ -276,9 +276,9 @@ public class q1 {
                 tmp.atual.ler(stringRecebida.substring(stringRecebida.indexOf('/', 0)));
                 if((Integer.parseInt(stringRecebida.substring(3)))==0)
                 {
-                    inserirInicio(tmp, controle[0]);
+                    inserirInicio(tmp, controle);
                 }
-                inserirNaPosicao(tmp,controle[0], controle, Integer.parseInt(stringRecebida.substring(3)));
+                inserirNaPosicao(tmp, controle, Integer.parseInt(stringRecebida.substring(3)));
                 break;
             case "IF":
                 Personagem personagemTmp=new Personagem();
@@ -293,11 +293,11 @@ public class q1 {
             }
             else{
                 System.out.println("(R) " + controle[0].prox.atual.nome);
-                removerInicio(controle[0]);
+                removerInicio(controle);
                 break;
             }
             case "R*":
-                System.out.println("(R) " + removerNaPosicao(controle[0], controle, Integer.parseInt(stringRecebida.substring(3))));
+                System.out.println("(R) " + removerNaPosicao(controle, Integer.parseInt(stringRecebida.substring(3))));
                 break;
             case "RF":
             if(controle[0]==controle[1])
@@ -306,7 +306,7 @@ public class q1 {
             }
             else{
                 System.out.println("(R) " + controle[1].atual.getNome());
-                removerFim(controle[0], controle);
+                removerFim(controle);
                 break;
             }
         }
@@ -333,7 +333,7 @@ public class q1 {
         tmp=null;
 
     }
-    public static void inserirNaPosicao(Celula tmp, Celula controle[0], Celula controle[], int posicaoDesejada)  {
+    public static void inserirNaPosicao(Celula tmp,Celula controle[], int posicaoDesejada)  {
         Celula temporaria=new Celula();
         int posicao=1;
         temporaria=controle[0].prox;
@@ -354,13 +354,13 @@ public class q1 {
         temporaria.prox=tmp;
         tmp=temporaria=null;
     }  
-    public static void removerInicio(Celula controle[0])  {
+    public static void removerInicio(Celula controle[])  {
         Celula temporaria=new Celula();
         temporaria=controle[0].prox;
         controle[0].prox=temporaria.prox;
         temporaria=null;
     }
-    public static void removerFim(Celula controle[0], Celula controle[]) {
+    public static void removerFim(Celula controle[]) {
         Celula temporaria=controle[0].prox;
         while(temporaria.prox!=controle[1])
         {
@@ -371,24 +371,32 @@ public class q1 {
 
 
     }
-    public static String removerNaPosicao(Celula controle[0], Celula controle[],int posicaoDesejada)  {
+    public static String removerNaPosicao(Celula controle[],int posicaoDesejada)  {
 
         //teeste
         
         Celula temporaria=new Celula();
         int posicao=1;
+        String resposta=null;
         temporaria=controle[0].prox;
-        while(posicao<posicaoDesejada||temporaria.prox==controle[1])
+        while(posicao<posicaoDesejada&&temporaria.prox==controle[1])
         {
             temporaria=temporaria.prox;
             posicao++;
         }
+        if(posicao<posicaoDesejada)
+        {
+            MyIO.println("Lista menor que a posicao desejada");
+        }
+        else{
         Celula aux=new Celula();
         aux=temporaria.prox;
-        String resposta=temporaria.prox.atual.getNome();
+        resposta=temporaria.prox.atual.getNome();
         temporaria.prox=aux.prox;
         aux=null;
+        }
         return resposta;
+
     }
     
         public static void main(String[] args) throws Exception
@@ -413,13 +421,16 @@ public class q1 {
         {
             input =MyIO.readLine();
             tmp=new Celula();
-            encontraComando(input,tmp, controle[0], controle);
+            encontraComando(input,tmp, controle);
             repeticoes--;
         }
         tmp=controle[0];
-       while(tmp!=ultimo)
+       while(tmp!=controle[1])
        {
         tmp=tmp.prox;
+
+
+
         tmp.atual.imprimir();
        }
 
