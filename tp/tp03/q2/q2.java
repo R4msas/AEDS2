@@ -30,11 +30,13 @@ public class q2 {
             l.encontraComando(input,tmp);
             repeticoes--;
         }
-        tmp=l.primeiro.getProx();
-        while(tmp.getProx()!=null)
-        {
+        tmp=l.primeiro;
+        int posicao=0;
+        while(tmp!=l.ultimo)
+        {   tmp=tmp.getProx();
+            MyIO.print("["+posicao+"] ");
             tmp.getAtual().imprimir();
-            tmp=tmp.getProx();
+            posicao++;
         }
     }
 }
@@ -303,55 +305,16 @@ class ListaEncadeada{
     {
         Personagem resp=new Personagem();
         Personagem personagem=new Personagem();
-        switch (stringRecebida.substring(0, 2)) {
-            case "II":
-                personagem.ler(stringRecebida.substring(3));
-                tmp.setAtual(personagem);
-                inserirInicio(tmp);
-                personagem=null;
-                break;
-            case "I*":
-            String auxString= stringRecebida.substring(6);
-                personagem.ler(auxString);            
-                tmp.setAtual(personagem);   
-                if((Integer.parseInt(stringRecebida.substring(3,4)))==0)
-                {
-                    inserirInicio(tmp);
-                }
-                else {
-                inserirNaPosicao(tmp, Integer.parseInt(stringRecebida.substring(3,4)));
-                }
-                break;
-            case "IF":
+        char operador=stringRecebida.charAt(0);
+        switch (operador) {
+            case 'I':
                 personagem=new Personagem();
-                personagem.ler(stringRecebida.substring(3));
+                personagem.ler(stringRecebida.substring(2));
                 tmp.setAtual(personagem);
                 inserirFinal(tmp);
                 personagem=null;
                 break;
-            case "RI":
-            if(primeiro==ultimo)
-            {
-                MyIO.println("ERRO! lista vazia");
-            }
-            else{
-                resp=removerInicio();
-                System.out.println("(R) " + resp.getNome());
-            }
-                break;
-            
-            case "R*":
-            if(Integer.parseInt(stringRecebida.substring(3))==0)
-            {
-                resp=removerInicio();
-                System.out.println("(R) " + resp.getNome());
-            }
-            else {
-                resp=removerNaPosicao(Integer.parseInt(stringRecebida.substring(3)));
-                System.out.println("(R) " + resp.getNome());
-            }
-                break;
-            case "RF":
+            case 'R':
             if(ultimo==primeiro)
             
             {
