@@ -9,6 +9,13 @@
             "name": "q2",
             "request": "launch",
             "mainClass": "q2",
+            "projectName": "q1_f40a6378"
+        },
+        {
+            "type": "java",
+            "name": "q2",
+            "request": "launch",
+            "mainClass": "q2",
             "projectName": "q1_6904d398"
         },
         {

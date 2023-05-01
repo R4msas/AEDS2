@@ -30,12 +30,8 @@ public class q2 {
             l.encontraComando(input,tmp);
             repeticoes--;
         }
-        tmp=l.primeiro.getProx();
-        while(tmp.getProx()!=null)
-        {
-            tmp.getAtual().imprimir();
-            tmp=tmp.getProx();
-        }
+        l.imprimeTodos();
+        
     }
 }
 class Personagem {
@@ -303,16 +299,55 @@ class ListaEncadeada{
     {
         Personagem resp=new Personagem();
         Personagem personagem=new Personagem();
-        char operador=stringRecebida.charAt(0);
-        switch (operador) {
-            case 'I':
+        switch (stringRecebida.substring(0, 2)) {
+            case "II":
+                personagem.ler(stringRecebida.substring(3));
+                tmp.setAtual(personagem);
+                inserirInicio(tmp);
+                personagem=null;
+                break;
+            case "I*":
+            String auxString= stringRecebida.substring(6);
+                personagem.ler(auxString);            
+                tmp.setAtual(personagem);   
+                if((Integer.parseInt(stringRecebida.substring(3,4)))==0)
+                {
+                    inserirInicio(tmp);
+                }
+                else {
+                inserirNaPosicao(tmp, Integer.parseInt(stringRecebida.substring(3,4)));
+                }
+                break;
+            case "IF":
                 personagem=new Personagem();
                 personagem.ler(stringRecebida.substring(3));
                 tmp.setAtual(personagem);
                 inserirFinal(tmp);
                 personagem=null;
                 break;
-            case 'R':
+            case "RI":
+            if(primeiro==ultimo)
+            {
+                MyIO.println("ERRO! lista vazia");
+            }
+            else{
+                resp=removerInicio();
+                System.out.println("(R) " + resp.getNome());
+            }
+                break;
+            
+            case "R*":
+            if(Integer.parseInt(stringRecebida.substring(3))==0)
+            {
+                resp=removerInicio();
+                System.out.println("(R) " + resp.getNome());
+            }
+            else {
+                resp=removerNaPosicao(Integer.parseInt(stringRecebida.substring(3)));
+                System.out.println("(R) " + resp.getNome());
+            }
+                break;
+            case "RF":
             if(ultimo==primeiro)
             
             {
@@ -349,6 +384,7 @@ class ListaEncadeada{
 
     }
     public void inserirNaPosicao(Celula tmp, int posicaoDesejada)  {
+       imprimeTodos();
         Celula temporaria=new Celula();
         int posicao=1;
         temporaria.setProx(primeiro.getProx());
@@ -368,6 +404,7 @@ class ListaEncadeada{
         tmp.setProx(temporaria.getProx());
         temporaria.setProx(tmp);
         tmp=temporaria=null;
+        imprimeTodos();
     }  
     public Personagem removerInicio()  {
         Personagem resposta=primeiro.getProx().getAtual();
@@ -386,6 +423,7 @@ class ListaEncadeada{
         return resposta;
     }
     public Personagem removerNaPosicao(int posicaoDesejada)  {
+        imprimeTodos();
         Celula temporaria=new Celula();
         int posicao=1;//no método de identificar o comando já verifica se  é na posicao 0
         Personagem resposta=null;
@@ -406,8 +444,17 @@ class ListaEncadeada{
         temporaria.setProx(aux.getProx());
         aux=temporaria=null;
         }
+        imprimeTodos();
         return resposta;
 
     }
-    
+    public void imprimeTodos()
+    {
+        Celula tmp=primeiro;
+        while(tmp.getProx()!=null)
+        {
+            tmp=tmp.getProx();
+            tmp.getAtual().imprimir();
+        }
+    }
 }
