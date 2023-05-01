@@ -30,8 +30,19 @@ public class q2 {
             l.encontraComando(input,tmp);
             repeticoes--;
         }
+<<<<<<< HEAD
         l.imprimeTodos();
         
+=======
+        tmp=l.primeiro;
+        int posicao=0;
+        while(tmp!=l.ultimo)
+        {   tmp=tmp.getProx();
+            MyIO.print("["+posicao+"] ");
+            tmp.getAtual().imprimir();
+            posicao++;
+        }
+>>>>>>> 6b9e158d5f4c2b7a1210f6037251315ec1be75c3
     }
 }
 class Personagem {
@@ -294,7 +305,6 @@ class ListaEncadeada{
     Celula ultimo;
     Celula primeiro;
 
-
     public void encontraComando(String stringRecebida, Celula tmp) throws Exception
     {
         Personagem resp=new Personagem();
@@ -361,7 +371,7 @@ class ListaEncadeada{
             
         }
     }
-    public void inserirInicio(Celula tmp)  {
+   public void inserirInicio(Celula tmp)  {
     tmp.setProx(primeiro.getProx());
     primeiro.setProx(tmp);
     tmp=null;     
@@ -442,6 +452,7 @@ class ListaEncadeada{
         aux=temporaria.getProx();
         resposta=aux.getAtual();
         temporaria.setProx(aux.getProx());
+        aux.setProx(null);
         aux=temporaria=null;
         }
         imprimeTodos();

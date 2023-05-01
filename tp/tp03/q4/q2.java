@@ -278,6 +278,13 @@ class Personagem {
 class Celula{
     private Personagem atual;
     private Celula prox;
+    private Celula ant;
+    public Celula getAnt() {
+        return ant;
+    }
+    public void setAnt(Celula ant) {
+        this.ant = ant;
+    }
     public Personagem getAtual()
     {
         return atual;
@@ -300,21 +307,59 @@ class ListaEncadeada{
     Celula ultimo;
     Celula primeiro;
 
-
     public void encontraComando(String stringRecebida, Celula tmp) throws Exception
     {
         Personagem resp=new Personagem();
         Personagem personagem=new Personagem();
-        char operador=stringRecebida.charAt(0);
-        switch (operador) {
-            case 'I':
+        switch (stringRecebida.substring(0, 2)) {
+            case "II":
+                personagem.ler(stringRecebida.substring(3));
+                tmp.setAtual(personagem);
+                inserirInicio(tmp);
+                personagem=null;
+                break;
+            case "I*":
+            String auxString= stringRecebida.substring(6);
+                personagem.ler(auxString);            
+                tmp.setAtual(personagem);   
+                if((Integer.parseInt(stringRecebida.substring(3,4)))==0)
+                {
+                    inserirInicio(tmp);
+                }
+                else {
+                inserirNaPosicao(tmp, Integer.parseInt(stringRecebida.substring(3,4)));
+                }
+                break;
+            case "IF":
                 personagem=new Personagem();
-                personagem.ler(stringRecebida.substring(2));
+                personagem.ler(stringRecebida.substring(3));
                 tmp.setAtual(personagem);
                 inserirFinal(tmp);
                 personagem=null;
                 break;
-            case 'R':
+            case "RI":
+            if(primeiro==ultimo)
+            {
+                MyIO.println("ERRO! lista vazia");
+            }
+            else{
+                resp=removerInicio();
+                System.out.println("(R) " + resp.getNome());
+            }
+                break;
+            
+            case "R*":
+            if(Integer.parseInt(stringRecebida.substring(3))==0)
+            {
+                resp=removerInicio();
+                System.out.println("(R) " + resp.getNome());
+            }
+            else {
+                resp=removerNaPosicao(Integer.parseInt(stringRecebida.substring(3)));
+                System.out.println("(R) " + resp.getNome());
+            }
+                break;
+            case "RF":
             if(ultimo==primeiro)
             
             {
@@ -328,15 +373,18 @@ class ListaEncadeada{
             
         }
     }
-    public void inserirInicio(Celula tmp)  {
+   public void inserirInicio(Celula tmp)  {
     tmp.setProx(primeiro.getProx());
+    tmp.setAnt(primeiro);
     primeiro.setProx(tmp);
+    primeiro.getProx().setAnt(tmp);
     tmp=null;     
 
     }
     public void inserirFinal(Personagem personagem, Celula tmp)
     {
         tmp.setAtual(personagem);
+        tmp.setAnt(ultimo);
         ultimo.setProx(tmp);
         ultimo=tmp;
         tmp=null;
@@ -345,6 +393,7 @@ class ListaEncadeada{
     public void inserirFinal(Celula tmp)
     {
 
+        tmp.setAnt(ultimo);
         ultimo.setProx(tmp);
         ultimo=tmp;
         tmp=null;

@@ -21,15 +21,7 @@ public class q2 {
             input = MyIO.readLine().replaceAll("é", "\u00e9");
             tmp=new Celula();
         }
-        int repeticoes=MyIO.readInt();
-        tmp=new Celula();
-        while(repeticoes> 0)
-        {
-            input =MyIO.readLine().replaceAll("é", "\u00e9");
-            tmp=new Celula();
-            l.encontraComando(input,tmp);
-            repeticoes--;
-        }
+        l.quicksort(l.primeiro.getProx(), l.ultimo);
         tmp=l.primeiro;
         int posicao=0;
         while(tmp!=l.ultimo)
@@ -278,6 +270,13 @@ class Personagem {
 class Celula{
     private Personagem atual;
     private Celula prox;
+    private Celula ant;
+    public Celula getAnt() {
+        return ant;
+    }
+    public void setAnt(Celula ant) {
+        this.ant = ant;
+    }
     public Personagem getAtual()
     {
         return atual;
@@ -299,22 +298,88 @@ class Celula{
 class ListaEncadeada{
     Celula ultimo;
     Celula primeiro;
+public void quicksort(Celula inicio, Celula fim)
+{ 
+    Celula esq=inicio;
+    Celula dir=fim;
+    Personagem pivo=primeiro.getProx().getAtual();//cria um personagem pivo que recebe o personagem gravado na primeira posicao da lista
+    while(esq!=dir)
+    {
+    while ((esq.getAtual().getCorDoCabelo().compareTo(pivo.getCorDoCabelo()))<0)//testa se a string é meno
+    {
+        esq=esq.getProx();
+    } 
+    while((dir.getAtual().getCorDoCabelo().compareTo(pivo.getCorDoCabelo()))>0)
+    {
+        dir=dir.getAnt();
+    }
+    swapPersonagem(esq, dir);
 
+}
+quicksort(inicio, dir);//chama recursivamente do início até o pivô
+quicksort(dir, fim);// chama recursivamente do pivô até o fim
 
+}
+public void swapPersonagem(Celula a, Celula b)//troca o personagem entre duas células
+{
+    Personagem tmp=new Personagem();
+    tmp=a.getAtual();
+    a.setAtual(b.getAtual());
+    b.setAtual(tmp);
+}
     public void encontraComando(String stringRecebida, Celula tmp) throws Exception
     {
         Personagem resp=new Personagem();
         Personagem personagem=new Personagem();
-        char operador=stringRecebida.charAt(0);
-        switch (operador) {
-            case 'I':
+        switch (stringRecebida.substring(0, 2)) {
+            case "II":
+                personagem.ler(stringRecebida.substring(3));
+                tmp.setAtual(personagem);
+                inserirInicio(tmp);
+                personagem=null;
+                break;
+            case "I*":
+            String auxString= stringRecebida.substring(6);
+                personagem.ler(auxString);            
+                tmp.setAtual(personagem);   
+                if((Integer.parseInt(stringRecebida.substring(3,4)))==0)
+                {
+                    inserirInicio(tmp);
+                }
+                else {
+                inserirNaPosicao(tmp, Integer.parseInt(stringRecebida.substring(3,4)));
+                }
+                break;
+            case "IF":
                 personagem=new Personagem();
-                personagem.ler(stringRecebida.substring(2));
+                personagem.ler(stringRecebida.substring(3));
                 tmp.setAtual(personagem);
                 inserirFinal(tmp);
                 personagem=null;
                 break;
-            case 'R':
+            case "RI":
+            if(primeiro==ultimo)
+            {
+                MyIO.println("ERRO! lista vazia");
+            }
+            else{
+                resp=removerInicio();
+                System.out.println("(R) " + resp.getNome());
+            }
+                break;
+            
+            case "R*":
+            if(Integer.parseInt(stringRecebida.substring(3))==0)
+            {
+                resp=removerInicio();
+                System.out.println("(R) " + resp.getNome());
+            }
+            else {
+                resp=removerNaPosicao(Integer.parseInt(stringRecebida.substring(3)));
+                System.out.println("(R) " + resp.getNome());
+            }
+                break;
+            case "RF":
             if(ultimo==primeiro)
             
             {
@@ -328,7 +393,7 @@ class ListaEncadeada{
             
         }
     }
-    public void inserirInicio(Celula tmp)  {
+   public void inserirInicio(Celula tmp)  {
     tmp.setProx(primeiro.getProx());
     primeiro.setProx(tmp);
     tmp=null;     
@@ -338,13 +403,14 @@ class ListaEncadeada{
     {
         tmp.setAtual(personagem);
         ultimo.setProx(tmp);
+        tmp.setAnt(ultimo);
         ultimo=tmp;
         tmp=null;
 
     }
     public void inserirFinal(Celula tmp)
     {
-
+        tmp.setAnt(ultimo);
         ultimo.setProx(tmp);
         ultimo=tmp;
         tmp=null;
