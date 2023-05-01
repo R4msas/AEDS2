@@ -278,6 +278,13 @@ class Personagem {
 class Celula{
     private Personagem atual;
     private Celula prox;
+    private Celula ant;
+    public Celula getAnt() {
+        return ant;
+    }
+    public void setAnt(Celula ant) {
+        this.ant = ant;
+    }
     public Personagem getAtual()
     {
         return atual;
@@ -368,13 +375,16 @@ class ListaEncadeada{
     }
    public void inserirInicio(Celula tmp)  {
     tmp.setProx(primeiro.getProx());
+    tmp.setAnt(primeiro);
     primeiro.setProx(tmp);
+    primeiro.getProx().setAnt(tmp);
     tmp=null;     
 
     }
     public void inserirFinal(Personagem personagem, Celula tmp)
     {
         tmp.setAtual(personagem);
+        tmp.setAnt(ultimo);
         ultimo.setProx(tmp);
         ultimo=tmp;
         tmp=null;
@@ -383,6 +393,7 @@ class ListaEncadeada{
     public void inserirFinal(Celula tmp)
     {
 
+        tmp.setAnt(ultimo);
         ultimo.setProx(tmp);
         ultimo=tmp;
         tmp=null;

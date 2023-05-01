@@ -406,6 +406,7 @@ class ListaEncadeada{
         aux=temporaria.getProx();
         resposta=aux.getAtual();
         temporaria.setProx(aux.getProx());
+        aux.setProx(null);
         aux=temporaria=null;
         }
         return resposta;
