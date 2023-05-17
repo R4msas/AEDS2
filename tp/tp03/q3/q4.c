@@ -3,13 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
 
 // Definição do registro do personagem
-typedef struct Celula
-{
-    Celula *prox;
-    Personagem atual;
-}Celula;
 typedef struct Personagem
 {
     char nome[40];
@@ -22,7 +18,11 @@ typedef struct Personagem
     char genero[40];
     char homeworld[40];
 } Personagem;
-
+typedef struct Celula
+{
+    struct Celula *prox;
+    struct Personagem *atual;
+}Celula;
 // Função para retornar o resto da divisão com double
 double fmod(double x, double y)
 {
@@ -138,22 +138,23 @@ Personagem montaPersonagem(char caminhoArquivo[])
 }
 
 // Imprimir os resultados
-void imprimirAtributos(Personagem listaPersonagens[], int tamanhoTotal)
-{
-    for (int i = 0; i < tamanhoTotal; i++)
+void imprimirAtributos(Celula *celulaPosicao[])
+{   Celula* tmp=celulaPosicao[0];
+    while(tmp->prox!=NULL)
     {
-        printf(" ## %s", listaPersonagens[i].nome);
-        printf(" ## %d", listaPersonagens[i].altura);
-        if (fmod(listaPersonagens[i].peso, 1) == 0)
-            printf(" ## %.0lf", listaPersonagens[i].peso);
+        tmp=tmp->prox;
+        printf(" ## %s", tmp->atual->nome);
+        printf(" ## %d", tmp->atual->altura);
+        if (fmod(tmp->atual->peso, 1) == 0)
+            printf(" ## %.0lf", tmp->atual->peso);
         else
-            printf(" ## %.1lf", listaPersonagens[i].peso);
-        printf(" ## %s", listaPersonagens[i].corDoCabelo);
-        printf(" ## %s", listaPersonagens[i].corDaPele);
-        printf(" ## %s", listaPersonagens[i].corDosOlhos);
-        printf(" ## %s", listaPersonagens[i].anoNascimento);
-        printf(" ## %s", listaPersonagens[i].genero);
-        printf(" ## %s", listaPersonagens[i].homeworld);
+            printf(" ## %.1lf", tmp->atual->peso);
+        printf(" ## %s", tmp->atual->corDoCabelo);
+        printf(" ## %s", tmp->atual->corDaPele);
+        printf(" ## %s", tmp->atual->corDosOlhos);
+        printf(" ## %s", tmp->atual->anoNascimento);
+        printf(" ## %s", tmp->atual->genero);
+        printf(" ## %s", tmp->atual->homeworld);
         printf(" ## \n");
     }
 }
@@ -174,18 +175,23 @@ void criarLog(time_t inicio, int contador[])
 
     fclose(log);
 }
-Celula *novaCelula()
+Celula *novaCelula(Personagem person)
 {
     Celula *nova=(Celula*)malloc(sizeof(Celula));
     nova->prox=NULL;
+    nova->atual=&person;
     return nova;
 }
-void insereFim(Celula *posicaoCelula[], Celula *tmp)
+void insereFim(Celula *posicaoCelula[], Celula *tmp, float media[])
 {
     posicaoCelula[1]->prox=tmp;
     posicaoCelula[1]=tmp;
+    media[1]+=(float)tmp->atual->altura;
+    media[0]++;
+    int valor=((media[1]/media[0])+0.5);
+    printf("%d\n", valor);
 }
-void removeFim(Celula *posicaoCelula[])
+void removeFim(Celula *posicaoCelula[], float media[])
 {
  Celula *tmp=posicaoCelula[0]->prox;
  if(posicaoCelula[0]->prox==NULL)
@@ -198,37 +204,58 @@ void removeFim(Celula *posicaoCelula[])
         tmp=tmp->prox;
     }
  }
+ printf("(R) %s",posicaoCelula[1]->atual->nome);
+ media[1]-=posicaoCelula[1]->atual->altura;
+ media[0]--;
  tmp->prox=NULL;
  posicaoCelula[1]=tmp;
  free(tmp);
+}
+void geraSubString(char primeiraString[], char segundaString[],int inicio, int fim)//inclui a posicao de inicio e a de fim, ex: primeiraString =abcde, inicio 1, fim 3, segundaString bcd.
+{   int j=0;
+    for(int c=inicio;c<=fim;c++)
+    {
+        primeiraString[c]=segundaString[j];
+        j++;
+    }
 }
 int main(void)
 {
     char caminhoArquivo[100], nomePersonagem[100];
     int contadorTamanho = 0, numeroComparacoes = 0, numeroMovimentacoes = 0;
     int contador[2]={0,0};
+    float media[2]={0,0};//posicao zero para quantidade na fila, posicao 1 para a soma das alturas.
     Celula *posicaoCelula[2];//célula para o primeiro e para o último elemento do array
     scanf(" %[^\n]s", caminhoArquivo);
     getchar();
-    Celula *tmp=novaCelula();
-    tmp->atual=montaPersonagem(caminhoArquivo);
+    struct Celula *tmp=novaCelula(montaPersonagem(caminhoArquivo));
     posicaoCelula[0]->prox=tmp;
     posicaoCelula[1]=tmp;
     while (testaFim(caminhoArquivo) == false)
     {
-        Celula *tmp=novaCelula();
-        tmp->atual = montaPersonagem(caminhoArquivo);//lê o arquivo e grava o personagem no atual em tmp
-        insereFim(posicaoCelula,tmp);
+        Celula *tmp=novaCelula(montaPersonagem(caminhoArquivo));
+        insereFim(posicaoCelula,tmp,media);
         scanf(" %[^\n]s", caminhoArquivo);
         getchar();
     }
     int repeticoes;
     scanf("%d",&repeticoes);
     while(repeticoes>0)
+    { 
+    scanf(" %[^\n]s", caminhoArquivo);
+    getchar();
+    if(caminhoArquivo[0]=='R')
     {
-
+        removeFim(posicaoCelula, media);
+    }
+    else{
+        char subString[100];
+        geraSubString(caminhoArquivo,subString,2,sizeof(caminhoArquivo)-1);
+        Celula *tmp=novaCelula(montaPersonagem(caminhoArquivo));
+        insereFim(posicaoCelula,tmp, media);
+    }    
     }
 
-    imprimirAtributos(posicaoCelula, contadorTamanho); // Imprimir os resultados
+    imprimirAtributos(posicaoCelula); // Imprimir os resultados
     return 0;
 }

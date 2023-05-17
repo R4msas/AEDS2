@@ -21,7 +21,19 @@ public class q2 {
             input = MyIO.readLine().replaceAll("é", "\u00e9");
             tmp=new Celula();
         }
-        l.quicksort(l.primeiro.getProx(), l.ultimo);
+        int repeticoes=MyIO.readInt();
+        tmp=new Celula();
+        while(repeticoes> 0)
+        {
+            input =MyIO.readLine().replaceAll("é", "\u00e9");
+            tmp=new Celula();
+            l.encontraComando(input,tmp);
+            repeticoes--;
+        }
+<<<<<<< HEAD
+        l.imprimeTodos();
+        
+=======
         tmp=l.primeiro;
         int posicao=0;
         while(tmp!=l.ultimo)
@@ -30,6 +42,7 @@ public class q2 {
             tmp.getAtual().imprimir();
             posicao++;
         }
+>>>>>>> 6b9e158d5f4c2b7a1210f6037251315ec1be75c3
     }
 }
 class Personagem {
@@ -270,13 +283,6 @@ class Personagem {
 class Celula{
     private Personagem atual;
     private Celula prox;
-    private Celula ant;
-    public Celula getAnt() {
-        return ant;
-    }
-    public void setAnt(Celula ant) {
-        this.ant = ant;
-    }
     public Personagem getAtual()
     {
         return atual;
@@ -298,35 +304,7 @@ class Celula{
 class ListaEncadeada{
     Celula ultimo;
     Celula primeiro;
-public void quicksort(Celula inicio, Celula fim)
-{ 
-    Celula esq=inicio;
-    Celula dir=fim;
-    Personagem pivo=primeiro.getProx().getAtual();//cria um personagem pivo que recebe o personagem gravado na primeira posicao da lista
-    while(esq!=dir)
-    {
-    while ((esq.getAtual().getCorDoCabelo().compareTo(pivo.getCorDoCabelo()))<0)//testa se a string é meno
-    {
-        esq=esq.getProx();
-    } 
-    while((dir.getAtual().getCorDoCabelo().compareTo(pivo.getCorDoCabelo()))>0)
-    {
-        dir=dir.getAnt();
-    }
-    swapPersonagem(esq, dir);
 
-}
-quicksort(inicio, dir);//chama recursivamente do início até o pivô
-quicksort(dir, fim);// chama recursivamente do pivô até o fim
-
-}
-public void swapPersonagem(Celula a, Celula b)//troca o personagem entre duas células
-{
-    Personagem tmp=new Personagem();
-    tmp=a.getAtual();
-    a.setAtual(b.getAtual());
-    b.setAtual(tmp);
-}
     public void encontraComando(String stringRecebida, Celula tmp) throws Exception
     {
         Personagem resp=new Personagem();
@@ -403,20 +381,20 @@ public void swapPersonagem(Celula a, Celula b)//troca o personagem entre duas c�
     {
         tmp.setAtual(personagem);
         ultimo.setProx(tmp);
-        tmp.setAnt(ultimo);
         ultimo=tmp;
         tmp=null;
 
     }
     public void inserirFinal(Celula tmp)
     {
-        tmp.setAnt(ultimo);
+
         ultimo.setProx(tmp);
         ultimo=tmp;
         tmp=null;
 
     }
     public void inserirNaPosicao(Celula tmp, int posicaoDesejada)  {
+       imprimeTodos();
         Celula temporaria=new Celula();
         int posicao=1;
         temporaria.setProx(primeiro.getProx());
@@ -436,6 +414,7 @@ public void swapPersonagem(Celula a, Celula b)//troca o personagem entre duas c�
         tmp.setProx(temporaria.getProx());
         temporaria.setProx(tmp);
         tmp=temporaria=null;
+        imprimeTodos();
     }  
     public Personagem removerInicio()  {
         Personagem resposta=primeiro.getProx().getAtual();
@@ -454,6 +433,7 @@ public void swapPersonagem(Celula a, Celula b)//troca o personagem entre duas c�
         return resposta;
     }
     public Personagem removerNaPosicao(int posicaoDesejada)  {
+        imprimeTodos();
         Celula temporaria=new Celula();
         int posicao=1;//no método de identificar o comando já verifica se  é na posicao 0
         Personagem resposta=null;
@@ -475,8 +455,17 @@ public void swapPersonagem(Celula a, Celula b)//troca o personagem entre duas c�
         aux.setProx(null);
         aux=temporaria=null;
         }
+        imprimeTodos();
         return resposta;
 
     }
-    
+    public void imprimeTodos()
+    {
+        Celula tmp=primeiro;
+        while(tmp.getProx()!=null)
+        {
+            tmp=tmp.getProx();
+            tmp.getAtual().imprimir();
+        }
+    }
 }

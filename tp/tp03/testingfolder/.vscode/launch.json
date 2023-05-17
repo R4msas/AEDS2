@@ -6,17 +6,17 @@
     "configurations": [
         {
             "type": "java",
-            "name": "q7",
+            "name": "q2",
             "request": "launch",
-            "mainClass": "q7",
-            "projectName": "quicksort java_db945daf"
+            "mainClass": "q2",
+            "projectName": "testingfolder_af633de6"
         },
         {
             "type": "java",
             "name": "q2",
             "request": "launch",
             "mainClass": "q2",
-            "projectName": "quicksort java_ccc79dcf"
+            "projectName": "q1_f40a6378"
         },
         {
             "type": "java",

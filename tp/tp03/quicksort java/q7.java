@@ -4,7 +4,7 @@ Trabalho Pr´atico II usando lista dinˆamica simples em Java.
 Autor  - Allan
  */
 import java.io.RandomAccessFile;
-public class q2 {
+public class q7 {
     public static void main(String[] args) throws Exception
     {
         ListaEncadeada l=new ListaEncadeada();        
@@ -21,22 +21,12 @@ public class q2 {
             input = MyIO.readLine().replaceAll("é", "\u00e9");
             tmp=new Celula();
         }
-        int repeticoes=MyIO.readInt();
-        tmp=new Celula();
-        while(repeticoes> 0)
-        {
-            input =MyIO.readLine().replaceAll("é", "\u00e9");
-            tmp=new Celula();
-            l.encontraComando(input,tmp);
-            repeticoes--;
-        }
+        int tamanho=l.getTamanhoLista();//encontra o tamanho de uma lista
+        l.quicksort(l.primeiro.getProx(), l.ultimo,0,tamanho-1);
         tmp=l.primeiro;
-        int posicao=0;
         while(tmp!=l.ultimo)
         {   tmp=tmp.getProx();
-            MyIO.print("["+posicao+"] ");
             tmp.getAtual().imprimir();
-            posicao++;
         }
     }
 }
@@ -278,6 +268,13 @@ class Personagem {
 class Celula{
     private Personagem atual;
     private Celula prox;
+    private Celula ant;
+    public Celula getAnt() {
+        return ant;
+    }
+    public void setAnt(Celula ant) {
+        this.ant = ant;
+    }
     public Personagem getAtual()
     {
         return atual;
@@ -299,7 +296,84 @@ class Celula{
 class ListaEncadeada{
     Celula ultimo;
     Celula primeiro;
+    int comparacoes;
+    int swap;
+public int getTamanhoLista()
+{   Celula tmp=primeiro;
+    int tamanho=0;
+    while(tmp.getProx()!=null)
+    {
+        tamanho++;
+        tmp=tmp.getProx();
 
+    }
+    return tamanho;
+}
+public void quicksort(Celula inicio, Celula fim, int left,int right)
+{ 
+    Celula esq=inicio;
+    Celula dir=fim;
+    int i=left;
+    int j=right;
+    Personagem pivo=fim.getAtual();//cria um personagem pivo que recebe o personagem gravado na primeira posicao da lista
+    while(i<=j)
+    {
+        comparacoes+=3;
+        //testa se a cor do cabelo é menor, caso falso, testa se é igual, se sim, verifica se o nome é menor; se sim, o ponteiro não é alterado; 
+        while ((esq.getAtual().getCorDoCabelo().compareTo(pivo.getCorDoCabelo()))<0||esq.getAtual().getCorDoCabelo().compareTo(pivo.getCorDoCabelo())==0&&esq.getAtual().getNome().compareTo(pivo.getNome())<0)
+        {
+            comparacoes+=3;
+            esq=esq.getProx();
+            i++;
+        }
+        
+        
+        comparacoes+=3;
+        while(((dir.getAtual().getCorDoCabelo().compareTo(pivo.getCorDoCabelo())))>0||(dir.getAtual().getCorDoCabelo().compareTo(pivo.getCorDoCabelo()))==0&&dir.getAtual().getNome().compareTo(pivo.getNome())>0)
+        {
+            comparacoes+=3;
+            dir=dir.getAnt();
+            j--;
+        
+        }
+        String a=esq.getAtual().getCorDoCabelo();
+        a+=esq.getAtual().getNome();
+        String b=dir.getAtual().getCorDoCabelo();
+        b+=dir.getAtual().getNome();
+        swapPersonagem(esq, dir);
+        swap++;
+        comparacoes++;
+        if(!(esq.getAtual().getNome().equals(pivo.getNome())))//verifica se o nome é igual, se não move o ponteiro
+        {
+            i++;
+            esq=esq.getProx();
+        }
+        comparacoes++;
+        if(!(dir.getAtual().getNome().equals(pivo.getNome())))
+        {
+            j--;
+            dir=dir.getAnt();
+        }
+    }
+    if(left<j)
+    {
+    quicksort(inicio, dir,left, j);//chama recursivamente do início até o pivô
+    }
+    if(i<right)
+    quicksort(esq, fim,i,right);// chama recursivamente do pivô até o fim
+}
+   
+    
+
+
+
+public void swapPersonagem(Celula a, Celula b)//troca o personagem entre duas células
+{
+    Personagem tmp=new Personagem();
+    tmp=a.getAtual();
+    a.setAtual(b.getAtual());
+    b.setAtual(tmp);
+}
     public void encontraComando(String stringRecebida, Celula tmp) throws Exception
     {
         Personagem resp=new Personagem();
@@ -376,20 +450,20 @@ class ListaEncadeada{
     {
         tmp.setAtual(personagem);
         ultimo.setProx(tmp);
+        tmp.setAnt(ultimo);
         ultimo=tmp;
         tmp=null;
 
     }
     public void inserirFinal(Celula tmp)
     {
-
+        tmp.setAnt(ultimo);
         ultimo.setProx(tmp);
         ultimo=tmp;
         tmp=null;
 
     }
     public void inserirNaPosicao(Celula tmp, int posicaoDesejada)  {
-       imprimeTodos();
         Celula temporaria=new Celula();
         int posicao=1;
         temporaria.setProx(primeiro.getProx());
@@ -409,7 +483,6 @@ class ListaEncadeada{
         tmp.setProx(temporaria.getProx());
         temporaria.setProx(tmp);
         tmp=temporaria=null;
-        imprimeTodos();
     }  
     public Personagem removerInicio()  {
         Personagem resposta=primeiro.getProx().getAtual();
@@ -428,7 +501,6 @@ class ListaEncadeada{
         return resposta;
     }
     public Personagem removerNaPosicao(int posicaoDesejada)  {
-        imprimeTodos();
         Celula temporaria=new Celula();
         int posicao=1;//no método de identificar o comando já verifica se  é na posicao 0
         Personagem resposta=null;
@@ -450,17 +522,8 @@ class ListaEncadeada{
         aux.setProx(null);
         aux=temporaria=null;
         }
-        imprimeTodos();
         return resposta;
 
     }
-    public void imprimeTodos()
-    {
-        Celula tmp=primeiro;
-        while(tmp.getProx()!=null)
-        {
-            tmp=tmp.getProx();
-            tmp.getAtual().imprimir();
-        }
-    }
+    
 }

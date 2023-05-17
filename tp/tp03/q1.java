@@ -4,7 +4,7 @@ Trabalho Pr´atico II usando lista dinˆamica simples em Java.
 Autor  - Allan
  */
 import java.io.RandomAccessFile;
-public class q2 {
+public class q1 {
     public static void main(String[] args) throws Exception
     {
         ListaEncadeada l=new ListaEncadeada();        
@@ -30,13 +30,11 @@ public class q2 {
             l.encontraComando(input,tmp);
             repeticoes--;
         }
-        tmp=l.primeiro;
-        int posicao=0;
-        while(tmp!=l.ultimo)
-        {   tmp=tmp.getProx();
-            MyIO.print("["+posicao+"] ");
+        tmp=l.primeiro.getProx();
+        while(tmp.getProx()!=null)
+        {
             tmp.getAtual().imprimir();
-            posicao++;
+            tmp=tmp.getProx();
         }
     }
 }
@@ -300,6 +298,7 @@ class ListaEncadeada{
     Celula ultimo;
     Celula primeiro;
 
+
     public void encontraComando(String stringRecebida, Celula tmp) throws Exception
     {
         Personagem resp=new Personagem();
@@ -366,7 +365,7 @@ class ListaEncadeada{
             
         }
     }
-   public void inserirInicio(Celula tmp)  {
+    public void inserirInicio(Celula tmp)  {
     tmp.setProx(primeiro.getProx());
     primeiro.setProx(tmp);
     tmp=null;     
@@ -389,7 +388,6 @@ class ListaEncadeada{
 
     }
     public void inserirNaPosicao(Celula tmp, int posicaoDesejada)  {
-       imprimeTodos();
         Celula temporaria=new Celula();
         int posicao=1;
         temporaria.setProx(primeiro.getProx());
@@ -409,7 +407,6 @@ class ListaEncadeada{
         tmp.setProx(temporaria.getProx());
         temporaria.setProx(tmp);
         tmp=temporaria=null;
-        imprimeTodos();
     }  
     public Personagem removerInicio()  {
         Personagem resposta=primeiro.getProx().getAtual();
@@ -428,7 +425,6 @@ class ListaEncadeada{
         return resposta;
     }
     public Personagem removerNaPosicao(int posicaoDesejada)  {
-        imprimeTodos();
         Celula temporaria=new Celula();
         int posicao=1;//no método de identificar o comando já verifica se  é na posicao 0
         Personagem resposta=null;
@@ -447,20 +443,10 @@ class ListaEncadeada{
         aux=temporaria.getProx();
         resposta=aux.getAtual();
         temporaria.setProx(aux.getProx());
-        aux.setProx(null);
         aux=temporaria=null;
         }
-        imprimeTodos();
         return resposta;
 
     }
-    public void imprimeTodos()
-    {
-        Celula tmp=primeiro;
-        while(tmp.getProx()!=null)
-        {
-            tmp=tmp.getProx();
-            tmp.getAtual().imprimir();
-        }
-    }
+    
 }

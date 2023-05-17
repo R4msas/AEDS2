@@ -8,7 +8,6 @@ public class q2 {
     public static void main(String[] args) throws Exception
     {
         ListaEncadeada l=new ListaEncadeada();        
-        MyIO.setCharset("UTF-8");
         String input = MyIO.readLine(); 
         Celula tmp=new Celula();
         l.primeiro=l.ultimo=new Celula();//primeiro e último apontam para a mesma célula.
@@ -30,14 +29,8 @@ public class q2 {
             l.encontraComando(input,tmp);
             repeticoes--;
         }
-        tmp=l.primeiro;
-        int posicao=0;
-        while(tmp!=l.ultimo)
-        {   tmp=tmp.getProx();
-            MyIO.print("["+posicao+"] ");
-            tmp.getAtual().imprimir();
-            posicao++;
-        }
+        l.imprimeTodos();
+        
     }
 }
 class Personagem {
@@ -237,7 +230,7 @@ class Personagem {
 
     public void imprimir()
     {
-        MyIO.setCharset("UTF-8");
+        MyIO.setCharset("ISO-8859-1");
         MyIO.print(" ## " + this.nome);
         MyIO.print(" ## " + this.altura);
         if (this.peso % 1.0 != 0)
@@ -305,16 +298,57 @@ class ListaEncadeada{
     {
         Personagem resp=new Personagem();
         Personagem personagem=new Personagem();
-        char operador=stringRecebida.charAt(0);
-        switch (operador) {
-            case 'I':
+        switch (stringRecebida.substring(0, 2)) {
+            case "II":
+                personagem.ler(stringRecebida.substring(3));
+                tmp.setAtual(personagem);
+                inserirInicio(tmp);
+                personagem=null;
+                break;
+            case "I*":
+            int repeticoes=Integer.parseInt(stringRecebida.substring(3,5));
+            String auxString= stringRecebida.substring(6);
+                personagem.ler(auxString);            
+                tmp.setAtual(personagem);   
+                if(repeticoes==0)
+                {
+                    inserirInicio(tmp);
+                }
+                else {
+                inserirNaPosicao(tmp, repeticoes);
+                }
+                break;
+            case "IF":
                 personagem=new Personagem();
-                personagem.ler(stringRecebida.substring(2));
+                personagem.ler(stringRecebida.substring(3));
                 tmp.setAtual(personagem);
                 inserirFinal(tmp);
                 personagem=null;
+
                 break;
-            case 'R':
+            case "RI":
+            if(primeiro==ultimo)
+            {
+                MyIO.println("ERRO! lista vazia");
+            }
+            else{
+                resp=removerInicio();
+                System.out.println("(R) " + resp.getNome());
+            }
+                break;
+            
+            case "R*":
+            if(Integer.parseInt(stringRecebida.substring(3))==0)
+            {
+                resp=removerInicio();
+                System.out.println("(R) " + resp.getNome());
+            }
+            else {
+                resp=removerNaPosicao(Integer.parseInt(stringRecebida.substring(3)));
+                System.out.println("(R) " + resp.getNome());
+            }
+                break;
+            case "RF":
             if(ultimo==primeiro)
             
             {
@@ -353,7 +387,7 @@ class ListaEncadeada{
     public void inserirNaPosicao(Celula tmp, int posicaoDesejada)  {
         Celula temporaria=new Celula();
         int posicao=1;
-        temporaria.setProx(primeiro.getProx());
+        temporaria=primeiro.getProx();
         while(posicao<posicaoDesejada)
         {
         if(temporaria==ultimo)
@@ -406,11 +440,22 @@ class ListaEncadeada{
         aux=temporaria.getProx();
         resposta=aux.getAtual();
         temporaria.setProx(aux.getProx());
-        aux.setProx(null);
         aux=temporaria=null;
         }
         return resposta;
 
     }
-    
+    public void imprimeTodos()
+    {
+        int posicao=0;
+        Celula tmp=primeiro;
+        while(tmp.getProx()!=null)
+        {
+            MyIO.print("["+posicao+"] ");
+            tmp=tmp.getProx();
+            MyIO.setCharset("ISO-8859-1");
+            tmp.getAtual().imprimir();
+            posicao++;
+        }
+    }
 }
