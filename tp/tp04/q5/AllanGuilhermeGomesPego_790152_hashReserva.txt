@@ -1,0 +1,1 @@
+Número de comparações 156	 , tempo decorrido em nanosegundos :64861728200
