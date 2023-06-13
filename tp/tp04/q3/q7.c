@@ -23,6 +23,13 @@ typedef struct Celula
     struct Celula *prox;
     Personagem *atual;
 } Celula;
+typedef struct No
+{
+    Personagem * atual;
+    No *esq;
+    No *dir;
+    int nivel;
+}No;
 // Função para retornar o resto da divisão com double
 double fmod(double x, double y)
 {
@@ -57,7 +64,61 @@ bool testaFim(char palavra[])
 
     return teste;
 }
-
+int encontraMaior(int a, int b) {
+    if (a > b) {
+        return a;
+    } else {
+        return b;
+    }
+}
+int setNivel(No* no) {
+		int nivel = 1 + encontraMaior(getNivel(no->esq), getNivel(no->dir));
+	return nivel;
+    }
+int getNivel(No* no) {
+    int resp;
+if(no==NULL)
+{
+    resp=0;
+}
+else{
+    resp=no->nivel;
+}
+        return resp;
+	}
+int pesquisa(No* no, char nomePersonagem[]) {
+   int resp=0;
+    if(no==NULL)
+    {
+        resp=0;
+    }
+    if(strcmp(nomePersonagem, no->atual->nome)==0)
+    {
+        resp=1;
+    }
+    else if(strcmp(nomePersonagem,no->atual->nome)<0)
+    {
+        resp=pesquisa(no->esq, nomePersonagem);
+    }
+    else
+    {
+        resp=pesquisa(no->dir, nomePersonagem);
+    }
+    return resp;
+}
+No* inserir(char nomePersonagem[], No* no){
+		if (no == NULL) {
+			no = novoNo(nomePersonagem);
+		} else if (strcmp(nomePersonagem, no->atual->nome)<0) {
+			no->esq = inserir(nomePersonagem, no->esq);
+		} else if (strcmp(nomePersonagem, no->atual->nome)>0) {
+			no->dir=inserir(nomePersonagem, no->dir);
+		} else {
+			printf("Erro ao inserir!");
+		}
+		return balancear(no);
+	}
+No*
 // Função para estruturar o personagem
 Personagem montaPersonagem(char caminhoArquivo[])
 {
@@ -204,6 +265,7 @@ Personagem *malocPersonagem(Personagem personagem)
     person->altura=personagem.altura;
     person->nome[0]='\0';
     strcat(person->nome,personagem.nome);
+    personagem.nome;
     return person;
 }
 int main(void)
@@ -211,7 +273,12 @@ int main(void)
     char caminhoArquivo[100], nomePersonagem[100];
     int contadorTamanho = 0, numeroComparacoes = 0, numeroMovimentacoes = 0;
     int contadorComparacao = 0;
-    struct Celula *hashTable[25] = {NULL}; 
+    struct Celula *hashTable[25] = {NULL}; // hash table destruct Celulas;
+                                           /*   for (int c = 0; c < 25; c++)
+                                             {
+                                                 hashTable[c]->atual = NULL; // inicializa todos os personagens em NULL
+                                             } */
+
     scanf(" %[^\n]s", caminhoArquivo);
     getchar();
 
@@ -232,7 +299,7 @@ int main(void)
         {
             struct Celula* tmp2=novaCelula();
             tmp2->atual=malocPersonagem(personagem);
-            tmp2->prox=hashTable[hash]->prox;    // inicializa o personagem recebido na célula tmp
+            tmp2->prox=hashTable[hash]->prox;                         // inicializa o personagem recebido na célula tmp
             hashTable[hash]->prox = tmp2;       // atualiza a referência da primeira célula com tmp
         }
         scanf(" %[^\n]s", caminhoArquivo);
@@ -244,7 +311,7 @@ int main(void)
     while (testaFim(stringRecebida) == false)
     {
         removeEspacos(stringRecebida);
-        char preCaminho[] = "/tmp/personagens/";
+        char preCaminho[] = "tmp/personagens/";
         char caminho[60] = "";
         strcat(caminho, preCaminho);
         strcat(caminho, stringRecebida);

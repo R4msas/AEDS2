@@ -137,6 +137,79 @@ Personagem montaPersonagem(char caminhoArquivo[])
     return personagem;
 }
 
+void montaPersonagem2(char caminhoArquivo[], Personagem* personagem)
+{
+    FILE *leitura = fopen(caminhoArquivo, "r");
+
+    char descricaoPersonagem[1000];
+
+    fscanf(leitura, " %[^\n]s", descricaoPersonagem);
+    int contador = 0;
+
+    for (int i = 0; i < strlen(descricaoPersonagem); i++)
+    {
+        if (descricaoPersonagem[i] == ':')
+        {
+            char atributo[50];
+            contador++;
+            switch (contador)
+            {
+            case 1:
+                leituraAtributo(atributo, descricaoPersonagem, i + 3);
+                strcpy(personagem->nome, atributo);
+                break;
+            case 2:
+                leituraAtributo(atributo, descricaoPersonagem, i + 3);
+                personagem->altura = atoi(atributo);
+                break;
+            case 3:
+                leituraAtributo(atributo, descricaoPersonagem, i + 3);
+                for (int i = 0; i < strlen(atributo); i++)
+                {
+                    if (atributo[i] == ',')
+                    {
+                        atributo[i] = atributo[i - 1];
+                        atributo[i - 1] = '0';
+                    }
+                }
+                personagem->peso = atof(atributo);
+                break;
+            case 4:
+                leituraAtributo(atributo, descricaoPersonagem, i + 3);
+                strcpy(personagem->corDoCabelo, atributo);
+                break;
+            case 5:
+                leituraAtributo(atributo, descricaoPersonagem, i + 3);
+                strcpy(personagem->corDaPele, atributo);
+                break;
+            case 6:
+                leituraAtributo(atributo, descricaoPersonagem, i + 3);
+                strcpy(personagem->corDosOlhos, atributo);
+                break;
+            case 7:
+                leituraAtributo(atributo, descricaoPersonagem, i + 3);
+                strcpy(personagem->anoNascimento, atributo);
+                break;
+            case 8:
+                leituraAtributo(atributo, descricaoPersonagem, i + 3);
+                strcpy(personagem->genero, atributo);
+                break;
+            case 9:
+                leituraAtributo(atributo, descricaoPersonagem, i + 3);
+                strcpy(personagem->homeworld, atributo);
+
+                i = strlen(descricaoPersonagem); // Encerra os ciclos de repetição desnecessários
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
+    fclose(leitura);
+
+    return;
+}
 void imprimirAtributos(Personagem listaPersonagens[], int tamanhoTotal)
 {
     for (int i = 0; i < tamanhoTotal; i++)
@@ -206,32 +279,46 @@ Personagem *malocPersonagem(Personagem personagem)
     strcat(person->nome,personagem.nome);
     return person;
 }
+Personagem* newPersonagem()
+{
+    Personagem *person = (Personagem *)malloc(sizeof(Personagem));
+    person->nome[0]='\0';
+    int altura=0;
+    double peso=0;
+    person->corDoCabelo[0]='\0';
+    person->corDaPele[0]='\0';
+    person->corDosOlhos[0]='\0';
+    person->anoNascimento[0]='\0';
+    person->genero[0]='\0';
+    person->homeworld[0]='\0';
+    return person;
+}
 int main(void)
 {
     char caminhoArquivo[100], nomePersonagem[100];
     int contadorTamanho = 0, numeroComparacoes = 0, numeroMovimentacoes = 0;
     int contadorComparacao = 0;
     struct Celula *hashTable[25] = {NULL}; 
-    scanf(" %[^\n]s", caminhoArquivo);
+    fgets(caminhoArquivo,sizeof(caminhoArquivo),stdin);
     getchar();
 
     time_t inicio = time(NULL); // Marcar o início da execução
 
     while (testaFim(caminhoArquivo) == false)
     {
-
-        Personagem personagem = montaPersonagem(caminhoArquivo);
-        int hash=personagem.altura % 25;
+        Personagem* personagem=newPersonagem();
+        montaPersonagem2(caminhoArquivo, personagem);
+        int hash=personagem->altura % 25;
         contadorComparacao++;
         if (hashTable[hash] == NULL)
         {
-            hashTable[hash] = novaCelula();
-            hashTable[hash]->atual=malocPersonagem(personagem);
+            hashTable[hash]=novaCelula();
+            hashTable[hash]->atual=personagem;
         }
         else
         {
             struct Celula* tmp2=novaCelula();
-            tmp2->atual=malocPersonagem(personagem);
+            tmp2->atual=personagem;
             tmp2->prox=hashTable[hash]->prox;    // inicializa o personagem recebido na célula tmp
             hashTable[hash]->prox = tmp2;       // atualiza a referência da primeira célula com tmp
         }
@@ -239,27 +326,29 @@ int main(void)
         getchar();
     }
     char stringRecebida[30];
-    scanf(" %[^\n]s", stringRecebida);
+    scanf("%[^\n]s", stringRecebida);
     getchar();
     while (testaFim(stringRecebida) == false)
     {
         removeEspacos(stringRecebida);
-        char preCaminho[] = "/tmp/personagens/";
+        char preCaminho[] = "tmp/personagens/";
         char caminho[60] = "";
         strcat(caminho, preCaminho);
         strcat(caminho, stringRecebida);
         strcat(caminho, ".txt");
-        Personagem personagem = montaPersonagem(caminho);
+        Personagem* personagem=newPersonagem();
+        montaPersonagem2(caminho, personagem);
         char nomePerson[40]="";
-        int hash=personagem.altura % 25;
+        strcat(nomePerson, personagem->nome);
+        int hash=personagem->altura % 25;
         contadorComparacao++;
-            printf("%s ", personagem.nome);
+        printf("%s ", personagem->nome);
         if (hashTable[hash] == NULL)
         {
             printf("NÃO\n");
         }
         else{
-        if (strcmp(personagem.nome, hashTable[hash]->atual->nome) == 0)
+        if (strcmp(personagem->nome, hashTable[hash]->atual->nome) == 0)
         {
             contadorComparacao++;
             printf("SIM\n");
@@ -273,7 +362,7 @@ int main(void)
             {
                 struct Celula *aux = tmp; // struct Celula auxiliar para poder retirar o próximo ponteiro se necessário.
                 tmp = tmp->prox;
-                if (strcmp(personagem.nome,tmp->atual->nome) == 0)
+                if (strcmp(personagem->nome,tmp->atual->nome) == 0)
                 {
                     contadorComparacao++;
                     resp = 1;              // caso tenha achado o personagem, para o while
