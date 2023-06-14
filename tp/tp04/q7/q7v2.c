@@ -299,13 +299,19 @@ int main(void)
     int contadorTamanho = 0, numeroComparacoes = 0, numeroMovimentacoes = 0;
     int contadorComparacao = 0;
     struct Celula *hashTable[25] = {NULL}; 
-    fgets(caminhoArquivo,sizeof(caminhoArquivo),stdin);
+    scanf(" %[^\n]s", caminhoArquivo);
+    
     getchar();
 
     time_t inicio = time(NULL); // Marcar o início da execução
 
     while (testaFim(caminhoArquivo) == false)
     {
+        char * p=strchr(caminhoArquivo,'\r');
+        if(p!=NULL)
+        {
+            *p='\0';
+        }
         Personagem* personagem=newPersonagem();
         montaPersonagem2(caminhoArquivo, personagem);
         int hash=personagem->altura % 25;
@@ -326,7 +332,7 @@ int main(void)
         getchar();
     }
     char stringRecebida[30];
-    scanf("%[^\n]s", stringRecebida);
+    scanf(" %[^\n]s", stringRecebida);
     getchar();
     while (testaFim(stringRecebida) == false)
     {
@@ -335,6 +341,11 @@ int main(void)
         char caminho[60] = "";
         strcat(caminho, preCaminho);
         strcat(caminho, stringRecebida);
+        char * p=strchr(caminho,'\r');
+        if(p!=NULL)
+        {
+            *p='\0';
+        }
         strcat(caminho, ".txt");
         Personagem* personagem=newPersonagem();
         montaPersonagem2(caminho, personagem);
@@ -380,6 +391,7 @@ int main(void)
             }
         }
         }
+        free(personagem);
         scanf(" %[^\n]s", stringRecebida);
         getchar();
     }

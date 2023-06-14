@@ -244,7 +244,7 @@ int main(void)
     while (testaFim(stringRecebida) == false)
     {
         removeEspacos(stringRecebida);
-        char preCaminho[] = "/tmp/personagens/";
+        char preCaminho[] = "tmp/personagens/";
         char caminho[60] = "";
         strcat(caminho, preCaminho);
         strcat(caminho, stringRecebida);
