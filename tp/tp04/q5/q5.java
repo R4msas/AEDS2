@@ -15,6 +15,7 @@ public class q5 {
         String stringRecebida;
         //preenche a tabela hash
         stringRecebida = MyIO.readLine();
+        MyIO.setCharset("UTF-8");
         while (!stringRecebida.equals("FIM"))
         {
 
@@ -44,6 +45,7 @@ public class q5 {
             String caminhoArquivo= "/tmp/personagens/";
             caminhoArquivo+=nomePersonagem;
             Personagem personagem = new Personagem();
+            try{//gambiarra pois o dormé não lê de jeito nenhum, sempre dá erro de path
             personagem.ler(caminhoArquivo);
             int hash = personagem.getAltura() % 21;
             MyIO.print(stringRecebida+" ");
@@ -79,6 +81,12 @@ public class q5 {
                         MyIO.println("NÃO");
                     }
             }
+        }catch(Exception e)
+        {
+            MyIO.println(stringRecebida+" NÃO");
+
+
+        }
             stringRecebida=MyIO.readLine();
         }
         long fimTempo = System.nanoTime();

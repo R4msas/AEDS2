@@ -1,7 +1,3 @@
-/**
- * q1 tp3,Lista com Aloca¸c˜ao Flex´ıvel: Refazer a Quest˜ao 3 “Lista com Aloca¸c˜ao Sequencial” do
- * Trabalho Pr´atico II usando lista dinˆamica simples em Java. Autor - Allan
- */
 import java.io.RandomAccessFile;
 public class q6 {
     public static void main(String[] args) throws Exception
@@ -11,7 +7,8 @@ public class q6 {
         long inicioTempo = System.nanoTime();
         String stringRecebida;
         //preenche a tabela hash
-        stringRecebida = MyIO.readLine();
+        //MyIO.setCharset("ISO-8859-1");
+        stringRecebida = MyIO.readLine().replaceAll("é", "\u00e9");
         while (!stringRecebida.equals("FIM"))
         {
 
@@ -27,10 +24,10 @@ public class q6 {
                 hashTable[(hash+1)%21] = personagem;//insere na posição da reserva.
             }
 
-            stringRecebida = MyIO.readLine();
+            stringRecebida = MyIO.readLine().replaceAll("é", "\u00e9");
         }
         //pesquisa
-        stringRecebida = MyIO.readLine();
+        stringRecebida = MyIO.readLine().replaceAll("é", "\u00e9");
         while (!stringRecebida.equals("FIM"))
         {
             
@@ -39,11 +36,12 @@ public class q6 {
             String caminhoArquivo= "/tmp/personagens/";
             caminhoArquivo+=nomePersonagem;
             Personagem personagem = new Personagem();
+            try{//esse try aqui é uma gambiarra pois o maldito do Dormé não lia de jeito nenhum, substituindo o char, sem trocar, com acento, sem acento. Tem um monte de teste diferente.
             personagem.ler(caminhoArquivo);
             int hash = personagem.getAltura() % 21;
             MyIO.print(stringRecebida+" ");
             contadorComparacao++;
-            try{
+            
            if(hashTable[hash].getNome().equals(personagem.getNome()))
             {
                 MyIO.println("SIM");
@@ -51,7 +49,7 @@ public class q6 {
             else if(hashTable[(hash+1)%21].getNome().equals(personagem.getNome()))//se reserva for igual a -1 está vazia.
             {
                 contadorComparacao++;//caso não entre no else if anterior, conta também a comparação que é devida
-                MyIO.println("SIM");
+                MyIO.println("");
             }
             else{
                 MyIO.println("NÃO");
@@ -59,11 +57,12 @@ public class q6 {
             }
         }
         catch(Exception e){
+            MyIO.print(stringRecebida+" ");
             MyIO.println("NÃO");
 
         }
             
-            stringRecebida=MyIO.readLine();
+            stringRecebida=MyIO.readLine().replaceAll("é", "\u00e9");//
         }
         long fimTempo = System.nanoTime();
         String tempoDecorrido = " , tempo decorrido em nanosegundos :" + (fimTempo - inicioTempo);

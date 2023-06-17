@@ -337,15 +337,16 @@ int main(void)
     while (testaFim(stringRecebida) == false)
     {
         removeEspacos(stringRecebida);
-        char preCaminho[] = "tmp/personagens/";
-        char caminho[60] = "";
-        strcat(caminho, preCaminho);
-        strcat(caminho, stringRecebida);
-        char * p=strchr(caminho,'\r');
+        char * p=strchr(stringRecebida,'\r');
         if(p!=NULL)
         {
             *p='\0';
         }
+        char preCaminho[] = "/tmp/personagens/";
+        char caminho[60] = "";
+        strcat(caminho, preCaminho);
+        strcat(caminho, stringRecebida);
+        
         strcat(caminho, ".txt");
         Personagem* personagem=newPersonagem();
         montaPersonagem2(caminho, personagem);
