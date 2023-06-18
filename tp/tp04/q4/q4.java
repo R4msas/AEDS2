@@ -1,97 +1,41 @@
-/**
- * q1 tp3,Lista com Aloca¸c˜ao Flex´ıvel: Refazer a Quest˜ao 3 “Lista com Aloca¸c˜ao Sequencial” do
- * Trabalho Pr´atico II usando lista dinˆamica simples em Java. Autor - Allan
- */
 import java.io.RandomAccessFile;
-public class q5 {
+public class q4 {
     public static void main(String[] args) throws Exception
     {
-        Personagem hashTable[] = new Personagem[30];
-        int tamTab=21; 
-        int tamReserva = 9;
-        int posicaoReserva = 0;
         int contadorComparacao = 0;
         long inicioTempo = System.nanoTime();
         String stringRecebida;
+        Alvinegra an=new Alvinegra();
         //preenche a tabela hash
-        stringRecebida = MyIO.readLine();
-        MyIO.setCharset("UTF-8");
+        //MyIO.setCharset("ISO-8859-1");
+        stringRecebida = MyIO.readLine().replaceAll("é", "\u00e9");
         while (!stringRecebida.equals("FIM"))
         {
-
             Personagem personagem = new Personagem();
             personagem.ler(stringRecebida);
-            int hash = personagem.getAltura() % 21;
-            if (hashTable[hash] == null)
-            {
-                hashTable[hash] = personagem;
-            } 
-            else if (posicaoReserva<tamReserva)
-            {
-                hashTable[tamTab+posicaoReserva] = personagem;//insere na posição da reserva.
-                posicaoReserva++;
-            }
-
-            stringRecebida = MyIO.readLine();
+            an.inserir(personagem);
+            stringRecebida = MyIO.readLine().replaceAll("é", "\u00e9");
         }
-        posicaoReserva--;//esta variável sempre aponta para a próxima posição, após o preenchimento é preciso voltá-la para a posição atual 
         //pesquisa
-        stringRecebida = MyIO.readLine();
+        stringRecebida = MyIO.readLine().replaceAll("é", "\u00e9");
         while (!stringRecebida.equals("FIM"))
         {
-            String nomePersonagem=stringRecebida.replaceAll("\\s","");
-            nomePersonagem+=".txt";
-            String caminhoArquivo= "tmp/personagens/";
-            caminhoArquivo+=nomePersonagem;
-            Personagem personagem = new Personagem();
-            try{//gambiarra pois o dormé não lê de jeito nenhum, sempre dá erro de path
-            personagem.ler(caminhoArquivo);
-            int hash = personagem.getAltura() % 21;
-            MyIO.print(stringRecebida+" ");
-            contadorComparacao++;
-            if(hashTable[hash]==null)
+            MyIO.print(stringRecebida);
+            if(an.pesquisar(stringRecebida))
             {
-                MyIO.println("NÃO");
+                MyIO.println(" SIM");
             }
-            else if(hashTable[hash].getNome().equals(personagem.getNome()))
+            else
             {
-                contadorComparacao++;
-                MyIO.println("SIM");
+                MyIO.println(" NÃO");
             }
-            else if(posicaoReserva>=0)//se reserva for igual a -1 está vazia.
-            {
-            contadorComparacao++;//caso não entre no else if anterior, conta também a comparação que é devida
-                Boolean possuiPersonagem=false;
-                for(int c=0; c<=posicaoReserva; c++) 
-                {
-                    contadorComparacao++;
-                    if(hashTable[tamTab+c].getNome().equals(personagem.getNome()))//se o nome estiver dentro da reserva
-                    {
-                        hashTable[tamTab+c]=hashTable[tamTab+posicaoReserva];//coloca a última posição da reserva na posição onde havia o personagem
-                        c=posicaoReserva; //para parar o for
-                         posicaoReserva--;//diminui o tamanho da reserva
-                         MyIO.println("SIM");
-                         possuiPersonagem=true;
-                    }
-                    
-                }
-                if(possuiPersonagem==false)
-                    {
-                        MyIO.println("NÃO");
-                    }
-            }
-        }catch(Exception e)
-        {
-            MyIO.println(stringRecebida+" NÃO");
-
-
-        }
-            stringRecebida=MyIO.readLine();
+        
+            stringRecebida=MyIO.readLine().replaceAll("é", "\u00e9");//
         }
         long fimTempo = System.nanoTime();
         String tempoDecorrido = " , tempo decorrido em nanosegundos :" + (fimTempo - inicioTempo);
         String conteudoArquivo = "Número de comparações " + contadorComparacao+"\t"+ tempoDecorrido;
-                String nomeDoArquivo = "AllanGuilhermeGomesPego_790152_hashReserva.txt";
+                String nomeDoArquivo = "AllanGuilhermeGomesPego_790152_alvinegra.txt";
         Arq.openWriteClose(nomeDoArquivo, conteudoArquivo);
     }
 }
@@ -545,3 +489,234 @@ class ListaEncadeada {
         }
     }
 }
+
+class No{
+    public boolean cor;
+    public Personagem personagem;
+    public No esq;
+    public No dir;
+    public boolean isCor()
+    {
+        return cor;
+    }
+    public void setCor(boolean cor)
+    {
+        this.cor = cor;
+    }
+    public Personagem getPersonagem()
+    {
+        return personagem;
+    }
+    public void setPersonagem(Personagem personagem)
+    {
+        this.personagem = personagem;
+    }
+    public No getEsq()
+    {
+        return esq;
+    }
+    public void setEsq(No esq)
+    {
+        this.esq = esq;
+    }
+    public No getDir()
+    {
+        return dir;
+    }
+    public void setDir(No dir)
+    {
+        this.dir = dir;
+    }
+}
+class Alvinegra{
+    private No raiz;
+
+    public No getRaiz()
+    {
+        return raiz;
+    }
+
+    public void setRaiz(No raiz)
+    {
+        this.raiz = raiz;
+    }
+    public Boolean pesquisar(String nome)
+    {
+        MyIO.print(" raiz");
+        Boolean resp =pesquisar(nome, raiz);
+        return resp;
+    }
+    public Boolean pesquisar(String nome, No no)
+    {
+        Boolean resp= false;
+        if(no==null)
+        {
+
+        }
+        else if(no.personagem.getNome().equals(nome))
+        {
+            resp=true;
+        }
+        else if(nome.compareTo(no.personagem.getNome())<0)
+        {
+            MyIO.print(" esq");
+            resp=pesquisar(nome, no.esq);
+        }
+        else{
+            MyIO.print(" dir");
+            resp=pesquisar(nome, no.dir);
+        }
+        return resp;
+    }
+    public void inserir(Personagem personagem) throws Exception {
+      //árvore vazia
+      if (raiz == null) {
+         raiz = new No();
+         raiz.personagem=personagem;
+      } else if (raiz.esq == null && raiz.dir == null) {
+         if (personagem.getNome().compareTo(raiz.personagem.getNome())<0) {
+            raiz.esq = new No();
+            raiz.esq.personagem=personagem;
+         } else {
+            raiz.dir = new No();
+            raiz.dir.personagem=personagem;
+         }
+//arvore com dois elementos, raiz e dir
+      } else if (raiz.esq == null) 
+      {
+         if (personagem.getNome().compareTo(raiz.personagem.getNome())<0) {
+            raiz.esq = new No();
+            raiz.esq.personagem=personagem;
+         } else if (personagem.getNome().compareTo(raiz.dir.personagem.getNome())<0) {
+            raiz.esq = new No();
+            raiz.esq.personagem=raiz.personagem;
+            raiz.personagem = personagem;
+         } else {
+            raiz.esq = new No();
+            raiz.esq.personagem=raiz.personagem;
+            raiz.personagem = raiz.dir.personagem;
+            raiz.dir.personagem = personagem;
+         }
+         raiz.esq.cor = raiz.dir.cor = false;
+
+      // Senao, se a arvore tiver dois personagems (raiz e esq)
+      } 
+      else if (raiz.dir == null) {
+         if (personagem.getNome().compareTo(raiz.personagem.getNome())>0) {
+            raiz.dir = new No();
+            raiz.dir.personagem=personagem;
+         } else if (personagem.getNome().compareTo(raiz.esq.personagem.getNome())>0) {
+            raiz.dir = new No();
+            raiz.dir.personagem=raiz.personagem;
+            raiz.personagem = personagem;
+         } else {
+            raiz.dir = new No();
+            raiz.dir.personagem=raiz.personagem;
+            raiz.personagem = raiz.esq.personagem;
+            raiz.esq.personagem = personagem;
+         }
+         raiz.esq.cor = raiz.dir.cor = false;
+
+      // Senao, a arvore tem tres ou mais personagems
+      } else {
+         inserir(personagem, null, null, null, raiz);
+      }
+      raiz.cor = false;
+   }
+private void inserir(Personagem personagem, No bisavo, No avo, No pai, No atual)
+{
+    if (atual==null)
+    {
+        if((personagem.getNome().compareTo(pai.personagem.getNome()))<0)
+        {
+            pai.esq=atual=new No();
+            atual.personagem=personagem;  
+            atual.cor=true;          
+        }
+        else{
+            pai.dir=atual=new No();
+            atual.personagem=personagem;
+            atual.cor=true;
+        }
+        if(pai.cor==true)
+        {
+            balancear(bisavo, avo, pai, atual);
+        }
+    }
+    else{
+        if(atual.esq!=null&& atual.dir!=null&&atual.esq.cor==true&&atual.dir.cor==true)
+        {
+            atual.cor=true;
+            atual.esq.cor=atual.dir.cor=false;
+            if(atual==raiz)
+            {
+                atual.cor=false;
+            }
+            else if(pai.cor==true){
+                balancear(bisavo, avo, pai, atual);
+            }
+        }
+        if (personagem.getNome().compareTo(atual.personagem.getNome())<0)
+        {
+            inserir(personagem, avo, pai, atual, atual.esq);
+        }
+        else 
+        {
+            inserir(personagem, avo, pai, atual, atual.dir);
+        }
+    }
+}
+private void balancear(No bisavo, No avo, No pai, No atual)
+{
+if (pai.cor == true) {
+         // 4 tipos de reequilibrios e acoplamento
+         if (pai.personagem.getNome().compareTo(avo.personagem.getNome()) >0 ) { // rotacao a esquerda ou direita-esquerda
+            if (atual.personagem.getNome().compareTo(pai.personagem.getNome())>0) {
+               avo = rotacaoEsq(avo);
+            } else {
+               avo = rotacaoDirEsq(avo);
+            }
+         } else { // rotacao a direita ou esquerda-direita
+            if (atual.personagem.getNome().compareTo(pai.personagem.getNome())<0) {
+               avo = rotacaoDir(avo);
+            } else {
+               avo = rotacaoEsqDir(avo);
+            }
+         }
+         if (bisavo == null) {
+            raiz = avo;
+         } else if (avo.personagem.getNome().compareTo(bisavo.personagem.getNome())<0) {
+            bisavo.esq = avo;
+         } else {
+            bisavo.dir = avo;
+         }
+         // reestabelecer as cores apos a rotacao
+         avo.cor = false;
+         avo.esq.cor = avo.dir.cor = true;
+      } 
+}
+private No rotacaoDir(No no) {
+      No noEsq = no.esq;
+      No noEsqDir = noEsq.dir;
+
+      noEsq.dir = no;
+      no.esq = noEsqDir;
+
+      return noEsq;
+   }
+private No rotacaoEsq(No no) {
+      No noDir = no.dir;
+      No noDirEsq = noDir.esq;
+      noDir.esq = no;
+      no.dir = noDirEsq;
+      return noDir;
+   }
+private No rotacaoDirEsq(No no) {
+      no.dir = rotacaoDir(no.dir);
+      return rotacaoEsq(no);
+   }
+private No rotacaoEsqDir(No no) {
+      no.esq = rotacaoEsq(no.esq);
+      return rotacaoDir(no);
+   }
+} 
