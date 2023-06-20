@@ -1,5 +1,9 @@
 import java.io.RandomAccessFile;
-public class q8 {
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class q8Rod {
     public static void main(String[] args) throws Exception
     {
         int contadorComparacao = 0;
@@ -28,18 +32,35 @@ public class q8 {
             segunda.inserir(nome);
             stringRecebida = MyIO.readLine().replaceAll("é", "\u00e9");
         }
-        primeira.mostrar();
-        MyIO.println("_______________________________");
-        segunda.mostrar();
-        MyIO.println("_______________________________");
-        segunda.merge(primeira);
-        MyIO.println("_______________________________");
-        segunda.mostrar();
+
+        List<String> nomesPrimeiraTRIE = primeira.recuperarNomes();        
+        List<String> nomesSegundaTRIE = segunda.recuperarNomes(); 
+        
+        ArrayList<String> nomesFinal = new ArrayList<>();
+        for (String nome:nomesPrimeiraTRIE){
+            contadorComparacao++;
+            if(!nomesFinal.contains(nome)){
+                nomesFinal.add(nome);
+            }
+        }
+        for (String nome:nomesSegundaTRIE){
+            contadorComparacao++;
+            if(!nomesFinal.contains(nome)){
+                nomesFinal.add(nome);
+            }
+        }
+
+        Trie terceira = new Trie();
+        for(String nome:nomesFinal){
+            terceira.inserir(nome);
+        }
+
+
         stringRecebida = MyIO.readLine().replaceAll("é", "\u00e9");
         while (!stringRecebida.equals("FIM"))
         {
             MyIO.print(stringRecebida);
-            if(segunda.pesquisar(stringRecebida))
+            if(terceira.pesquisar(stringRecebida))
             {
                 MyIO.println(" SIM");
             }
@@ -58,29 +79,39 @@ public class q8 {
     }
 }
 class Trie {
+    public Trie(No raiz, int compara) {
+        this.raiz = raiz;
+        this.compara = compara;
+    }
+    public Trie()
+    {
+        raiz=null;
+        compara=0;
+    }
+
     public No raiz;
     public int compara;
 
-    Trie(){
+
+    public void inserir(String palavra)
+{
+    if(raiz==null)
+    {
         raiz=new No();
     }
-
-public void inserir(String palavra)
-{
     inserir(0,palavra,raiz);
 }
-private void inserir (int posicao, String palavra, No no)
+    private void inserir (int posicao, String palavra, No no)
 {   
     compara++;
-    if(no.alfabeto[palavra.charAt(posicao)]==null)
+    if(no.alfabeto[(int)palavra.charAt(posicao)]==null)
     {
-        int pos=palavra.charAt(posicao);
-        char letter=palavra.charAt(posicao);
-        no.alfabeto[pos]=new No(letter);
+        compara++;
+        no.alfabeto[(int)palavra.charAt(posicao)]=new No(palavra.charAt(posicao));
         compara++;
         if(posicao<palavra.length()-1){
         posicao++;
-        inserir(posicao, palavra, no.alfabeto[pos]);
+        inserir(posicao, palavra, no.alfabeto[(int)palavra.charAt(posicao)]);
         }
         compara++;
         if(posicao==palavra.length()-1){
@@ -100,6 +131,30 @@ private void inserir (int posicao, String palavra, No no)
     }
 
 }
+    
+    public List<String> recuperarNomes() {
+        List<String> nomes = new ArrayList<>();
+        StringBuilder nomeAtual = new StringBuilder();
+        recuperarNomesRecursivo(raiz, nomeAtual, nomes);
+        return nomes;
+    }
+
+    private void recuperarNomesRecursivo(No no, StringBuilder nomeAtual, List<String> nomes) {
+        if (no.fim==true) {
+            nomes.add(nomeAtual.toString());
+        }
+
+        for (int i = 0; i < no.alfabeto.length; i++) {
+            No filho = no.alfabeto[i];
+            if (filho != null) {
+                char caracterAtual = (char) (i);
+                nomeAtual.append(caracterAtual);
+                recuperarNomesRecursivo(filho, nomeAtual, nomes);
+                nomeAtual.deleteCharAt(nomeAtual.length() - 1);
+            }
+        }
+    }
+
 public void merge(Trie primeira)
 {   
     merge(primeira.raiz,this.raiz);
@@ -190,7 +245,7 @@ class No{
         this.alfabeto = alfabeto;
     }
     No(){
-        letra=' ';
+        letra=0;
         alfabeto=new No[256];
         for(int c=0;c<256;c++)
         {

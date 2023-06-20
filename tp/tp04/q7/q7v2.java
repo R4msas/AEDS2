@@ -1,216 +1,39 @@
 import java.io.RandomAccessFile;
-public class q8 {
-    public static void main(String[] args) throws Exception
-    {
-        int contadorComparacao = 0;
-        long inicioTempo = System.nanoTime();
-        String stringRecebida;
-        Trie primeira=new Trie();
-        Trie segunda=new Trie();
-        //preenche a tabela hash
-        //MyIO.setCharset("ISO-8859-1");
-        stringRecebida = MyIO.readLine().replaceAll("é", "\u00e9");
-        while (!stringRecebida.equals("FIM"))
-        {
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
+
+public class q7v2 {
+    public static void main(String[] args) throws Exception {
+        long tempoInicial = System.currentTimeMillis();
+        String matricula = "790152";
+        hash h = new hash();        
+        MyIO.setCharset("UTF-8");
+        String input = MyIO.readLine(); 
+        while (!input.equals("FIM")){
             Personagem personagem = new Personagem();
-            personagem.ler(stringRecebida);
-            String nome=personagem.getNome();
-            primeira.inserir(nome);
-            stringRecebida = MyIO.readLine().replaceAll("é", "\u00e9");
+            personagem.ler(input);
+            h.inserir(personagem);
+            input = MyIO.readLine().replaceAll("é", "\u00c3");
         }
-        //pesquisa
-        stringRecebida = MyIO.readLine().replaceAll("é", "\u00e9");
-        while (!stringRecebida.equals("FIM"))
-        {
-            Personagem personagem = new Personagem();
-            personagem.ler(stringRecebida);
-            String nome=personagem.getNome();
-            segunda.inserir(nome);
-            stringRecebida = MyIO.readLine().replaceAll("é", "\u00e9");
-        }
-        primeira.mostrar();
-        MyIO.println("_______________________________");
-        segunda.mostrar();
-        MyIO.println("_______________________________");
-        segunda.merge(primeira);
-        MyIO.println("_______________________________");
-        segunda.mostrar();
-        stringRecebida = MyIO.readLine().replaceAll("é", "\u00e9");
-        while (!stringRecebida.equals("FIM"))
-        {
-            MyIO.print(stringRecebida);
-            if(segunda.pesquisar(stringRecebida))
-            {
-                MyIO.println(" SIM");
-            }
-            else
-            {
-                MyIO.println(" NÃO");
-            }
-        
-            stringRecebida=MyIO.readLine().replaceAll("é", "\u00e9");//
-        }
-        long fimTempo = System.nanoTime();
-        String tempoDecorrido = " , tempo decorrido em nanosegundos :" + (fimTempo - inicioTempo);
-        String conteudoArquivo = "Número de comparações " + contadorComparacao+"\t"+ tempoDecorrido;
-                String nomeDoArquivo = "AllanGuilhermeGomesPego_790152_alvinegra.txt";
-        Arq.openWriteClose(nomeDoArquivo, conteudoArquivo);
-    }
-}
-class Trie {
-    public No raiz;
-    public int compara;
 
-    Trie(){
-        raiz=new No();
-    }
-
-public void inserir(String palavra)
-{
-    inserir(0,palavra,raiz);
-}
-private void inserir (int posicao, String palavra, No no)
-{   
-    compara++;
-    if(no.alfabeto[palavra.charAt(posicao)]==null)
-    {
-        int pos=palavra.charAt(posicao);
-        char letter=palavra.charAt(posicao);
-        no.alfabeto[pos]=new No(letter);
-        compara++;
-        if(posicao<palavra.length()-1){
-        posicao++;
-        inserir(posicao, palavra, no.alfabeto[pos]);
-        }
-        compara++;
-        if(posicao==palavra.length()-1){
-        no.fim=true;
-        }
-    }
-    else{
-        compara++;
-        if(posicao<palavra.length()-1){
-        posicao++;
-        inserir(posicao, palavra, no.alfabeto[(int)palavra.charAt(posicao)]);
-        }
-        compara++;
-        if(posicao==palavra.length()-1){
-        no.fim=true;
-        }
-    }
-
-}
-public void merge(Trie primeira)
-{   
-    merge(primeira.raiz,this.raiz);
-    
-}
-private void merge(No primeira, No segunda)
-{
-    for(int c=0;c<256;c++,compara++)
-    {
-        if(primeira.alfabeto[c]!=null)
-        {
-            compara++;
-            if(segunda.alfabeto[c]==null)
-            {
-                segunda.alfabeto[c]=new No(primeira.letra);
-                merge(primeira.alfabeto[c],segunda.alfabeto[c]);
-            }
-            else{
-                merge(primeira.alfabeto[c], segunda.alfabeto[c]);
-            }
+        input = MyIO.readLine().replaceAll("é", "\u00e9");
+        while (!input.equals("FIM")){
+            String caminhoPercorrido = h.search(input);
+            System.out.println(caminhoPercorrido.replaceAll("Ã", "\u00c3"));
+            input = MyIO.readLine().replaceAll("é", "\u00e9");
 
         }
-    }
-}
-public Boolean pesquisar(String nome)
-{
-    return pesquisar(nome, raiz,0);
-}
-private Boolean pesquisar(String nome, No no, int posicao)
-{ Boolean resp=false;
-    compara++;
-    if(no==null)
-    {
-        resp=false;
-    }
-    else if(no.alfabeto[(int)nome.charAt(posicao)]==null)
-    {
-        compara++;
-        resp=false;
-    }
-    else if(no.fim==true)
-    {
-        resp=true;
-    }
-    else
-    {
-        resp=pesquisar(nome,no.alfabeto[(int)nome.charAt(posicao)],posicao+1);
-    }
-    return resp;
+        long tempoFinal = System.currentTimeMillis();
+        long tempoExecucao = tempoFinal - tempoInicial;
 
-}
-public void mostrar()
-{
-    mostrar("",raiz);
+        ArquivoLog arquivo = new ArquivoLog();
+        arquivo.criarArquivoLog(matricula,tempoExecucao,h.numComparacoesHash);
+
+    }
 }
 
-public void mostrar(String s,No no) {
-    if (no.fim == true) {
-    System.out.println("Palavra: " + (s + no.letra));
-    } else {
-    for (int i = 0; i < no.alfabeto.length; i++) {
-        if (no.alfabeto[i] != null) {
-        mostrar(s + no.letra, no.alfabeto[i]);
-                }
-            }
-}
-}
-}
-class No{
-    char letra;
-    No alfabeto[];
-    Boolean fim;
-    
-    public char getLetra()
-    {
-        return letra;
-    }
-    public void setLetra(char letra)
-    {
-        this.letra = letra;
-    }
-    public No[] getAlfabeto()
-    {
-        return alfabeto;
-    }
-    public void setAlfabeto(No[] alfabeto)
-    {
-        this.alfabeto = alfabeto;
-    }
-    No(){
-        letra=' ';
-        alfabeto=new No[256];
-        for(int c=0;c<256;c++)
-        {
-            alfabeto[c]=null;
-        }
-        fim=false;
-    }
-    No(char letra)
-    {
-        this.letra=letra;
-        alfabeto=new No[256];
-        for(int c=0;c<256;c++)
-        {
-            alfabeto[c]=null;
-        }
-        fim=false;
-    }
-
-
-}
 
 class Personagem {
     private String nome;
@@ -222,7 +45,7 @@ class Personagem {
     private String anoNascimento;
     private String genero;
     private String homeworld;
-
+  
     Personagem(String nome, int altura, double peso, String corDoCabelo, String corDaPele,
             String corDosOlhos, String anoNascimento, String genero, String homeworld) {
         setNome(nome);
@@ -445,9 +268,129 @@ class Personagem {
 
         return cloned;
     }
-    /*
-     * public int hashInsercao(Personagem personagem) { int remocao=0;
-     * 
-     * }
-     */
+}
+
+class celula{
+    public Personagem chave;
+    public celula prox;
+
+    public celula(){
+        this.chave = null;
+        this.prox = null;
+    }
+
+    public celula(Personagem objPersonagem){
+        this.chave = objPersonagem;
+        this.prox = null;
+    }
+}
+
+class lista{
+    public celula primeiro,ultimo;
+    public int numComparacoesLista;
+
+
+
+    public void acrescentaComparacoes(){
+         numComparacoesLista++;
+    }
+
+    public lista(){
+        primeiro = new celula(null);
+        ultimo = primeiro;
+    }
+    public void inserir(Personagem objPersonagem){
+        celula tmp = new celula(objPersonagem);
+        ultimo.prox = tmp;
+        ultimo = ultimo.prox;
+        tmp = null;
+    }
+
+    public boolean pesquisar(String nome){
+        boolean resultado = false;
+        for (celula corredora = primeiro.prox;corredora!=null;corredora = corredora.prox){
+            acrescentaComparacoes();
+            if(corredora.chave.getNome().equals(nome)){
+                resultado = true;
+            }
+        }
+        return resultado;
+    }
+}
+
+class hash{
+    public lista[] tabela;
+    private final int tamanho = 25;
+    public int numComparacoesHash=0;
+
+
+    public hash(){
+        tabela = new lista[tamanho];
+        for (int i = 0; i < tamanho; i++) {
+            tabela[i] = new lista();
+        }
+    }
+
+    public int posicaoTabela(int altura){
+        return altura%tamanho;
+    }
+
+    public void incrementaComparacoes(){
+        numComparacoesHash++;
+    }
+
+    public void inserir(Personagem objPersonagem) {
+
+        int indice = posicaoTabela(objPersonagem.getAltura());
+       
+        tabela[indice].inserir(objPersonagem);       
+    }
+    
+    public String search(String nome) {
+        StringBuilder saida = new StringBuilder(nome);
+        StringBuilder resultados = new StringBuilder();
+        
+        /*Aqui, estou percorrendo todas as listas contidas no hash e procurando se o nome dado está contido na estrutura.
+        // Ao final, irei utilizar uma pesquisa dentro do StringBuilder, para saber se a palavra SIM foi encontrada.
+        // Após isso, irei apenas imprimir o nome e o resultado*/
+
+        for(int i=0;i<tamanho;i++){
+            if(tabela[i].pesquisar(nome)){
+                incrementaComparacoes();
+                numComparacoesHash +=tabela[i].numComparacoesLista;
+                resultados.append("SIM");
+            }
+            else{
+                incrementaComparacoes();
+                numComparacoesHash +=tabela[i].numComparacoesLista;
+                resultados.append("NÃO".replaceAll("Ã", "\u00c3"));
+            }
+        }
+        String palavraProcurada = "SIM";
+        int posicao = resultados.indexOf(palavraProcurada);
+        incrementaComparacoes();
+
+        if (posicao != -1) {
+            incrementaComparacoes();
+            saida.append(" SIM");
+        } else {
+            incrementaComparacoes();
+            saida.append(" NÃO".replaceAll("Ã", "\u00c3"));
+        }
+
+        return saida.toString();
+    }
+}
+
+class ArquivoLog {
+    public void criarArquivoLog(String matricula, long tempoExecucao, int numeroComparacoes) {
+        String nomeArquivo = "790152_hashIndireta.txt";
+
+        try (BufferedWriter escritor = new BufferedWriter(new FileWriter(nomeArquivo))) {
+            String conteudoArquivo = matricula + "\t" + tempoExecucao + "\t" + numeroComparacoes;
+            escritor.write(conteudoArquivo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

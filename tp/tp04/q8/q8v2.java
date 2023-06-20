@@ -144,8 +144,8 @@ class ArvoreTrie {
     public void criarLog(long tempoInicial, int comparacoes) {
         long tempoFinal = System.currentTimeMillis(); // Gravar o tempo do fim da execução
 
-        Arq.openWrite("matricula_arvoreTrie.txt");
-        Arq.println("Matricula: 790052\t" + "Numero Comparacoes: " + comparacoes + "\t" + "Tempo Execucao: "
+        Arq.openWrite("790152_arvoreTrie.txt");
+        Arq.println("Matricula: 790152\t" + "Numero Comparacoes: " + comparacoes + "\t" + "Tempo Execucao: "
                 + (tempoFinal - tempoInicial) + "ms");
         Arq.close();
     }
@@ -272,11 +272,11 @@ public class q8v2 {
         MyIO.setCharset("ISO-8859-1");
         long tempoInicial = System.currentTimeMillis(); // Gravar tempo de início de execução
 
-        ArvoreTrie arvorePrimeiraPersonagens = new ArvoreTrie(); // Criar primeira árvore
-        ArvoreTrie arvoreSegundaPersonagens = new ArvoreTrie(); // Criar segunda árvore
+        ArvoreTrie primeira = new ArvoreTrie(); // Criar primeira árvore
+        ArvoreTrie segunda = new ArvoreTrie(); // Criar segunda árvore
 
         // Árvore que servirá como merge
-        ArvoreTrie arvoreMergePersonagens = new ArvoreTrie();
+        ArvoreTrie terceira = new ArvoreTrie();
 
         String caminhoArquivo = MyIO.readLine().replaceAll("é", "\u00e9");
 
@@ -284,7 +284,7 @@ public class q8v2 {
         while (testaFim(caminhoArquivo) == false) {
 
             // Montar personagem e inserir na árvore binária
-            arvorePrimeiraPersonagens.inserir(montaPersonagem(caminhoArquivo));
+            primeira.inserir(montaPersonagem(caminhoArquivo));
 
             caminhoArquivo = MyIO.readLine().replaceAll("é", "\u00e9");
         }
@@ -295,14 +295,14 @@ public class q8v2 {
         while (testaFim(caminhoArquivo) == false) {
 
             // Montar personagem e inserir na árvore binária
-            arvoreSegundaPersonagens.inserir(montaPersonagem(caminhoArquivo));
+            segunda.inserir(montaPersonagem(caminhoArquivo));
 
             caminhoArquivo = MyIO.readLine().replaceAll("é", "\u00e9");
         }
 
         // Fazer o merge entre as duas árvores antes de utilizá-lo para pesquisar
-        arvoreMergePersonagens.inserirNaMerge("", arvorePrimeiraPersonagens);
-        arvoreMergePersonagens.inserirNaMerge("", arvoreSegundaPersonagens);
+        terceira.inserirNaMerge("", primeira);
+        terceira.inserirNaMerge("", segunda);
 
         // Armazenar os nomes que serão pesquisados
         String nomeConsultaPersonagem = MyIO.readLine().replaceAll("é", "\u00e9");
@@ -311,7 +311,7 @@ public class q8v2 {
         while (testaFim(nomeConsultaPersonagem) == false) {
             MyIO.print(nomeConsultaPersonagem + " ");
 
-            if (arvoreMergePersonagens.pesquisar(nomeConsultaPersonagem)) {
+            if (terceira.pesquisar(nomeConsultaPersonagem)) {
                 MyIO.println("SIM");
             } else {
                 MyIO.println("NÃO");
@@ -320,10 +320,10 @@ public class q8v2 {
             nomeConsultaPersonagem = MyIO.readLine().replaceAll("é", "\u00e9");
         }
 
-        int totalComparacoes = arvorePrimeiraPersonagens.numeroComparacoes + arvoreSegundaPersonagens.numeroComparacoes
-                + arvoreMergePersonagens.numeroComparacoes;
+        int totalComparacoes = primeira.numeroComparacoes + segunda.numeroComparacoes
+                + terceira.numeroComparacoes;
 
-        arvoreMergePersonagens.criarLog(tempoInicial, totalComparacoes); // Passar o tempo de início da execução
+        terceira.criarLog(tempoInicial, totalComparacoes); // Passar o tempo de início da execução
     }
 
     // Testar fim do arquivo
